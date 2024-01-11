@@ -1,19 +1,19 @@
 {
   "Files": [
     {
-      "Id": "/home/mario/CardBid/obj/Debug/net7.0/scopedcss/projectbundle/CardBid.bundle.scp.css",
+      "Id": "/home/jojocoelho/Desktop/Projetos/CardBid/obj/Debug/net7.0/scopedcss/projectbundle/CardBid.bundle.scp.css",
       "PackagePath": "staticwebassets/CardBid.bundle.scp.css"
     },
     {
-      "Id": "/home/mario/CardBid/wwwroot/css/app.css",
+      "Id": "/home/jojocoelho/Desktop/Projetos/CardBid/wwwroot/css/app.css",
       "PackagePath": "staticwebassets/css/app.css"
     },
     {
-      "Id": "/home/mario/CardBid/wwwroot/css/site.css",
+      "Id": "/home/jojocoelho/Desktop/Projetos/CardBid/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
     {
-      "Id": "/home/mario/CardBid/wwwroot/favicon.png",
+      "Id": "/home/jojocoelho/Desktop/Projetos/CardBid/wwwroot/favicon.png",
       "PackagePath": "staticwebassets/favicon.png"
     },
     {

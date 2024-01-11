@@ -1,3 +1,5 @@
+@namespace CardBid.Pages
+@inject NavigationManager NavigationManager
 @page "/login"
 <div class="flex flex-col justify-center items-center h-screen">
     <h1 class="font-bold text-3xl py-2">Login</h1>
@@ -6,6 +8,6 @@
         <input type="password" placeholder="Password" class="border-black border-2 px-4 py-2 rounded">
         <button class="bg-blue-500 text-white px-4 py-2 rounded w-96">Login</button>
         <a href="">Forgot Password?</a>
-        <a href="">Don't have an account? Signup</a>
+        <a href="/signup" class="button-like" @onclick="NavigateToRegister">Don't have an account? Signup</a>
     </div>
 </div>
