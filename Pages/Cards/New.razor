@@ -1,0 +1,53 @@
+@page "/card/new"
+
+<div class="flex flex-row justify-center space-x-12 py-4 items-center h-fit min-h-screen">
+    <div>
+    <h1 class="font-bold text-3xl py-2">List for Sale</h1>
+    <div class="flex flex-col space-y-4">
+        <label class="font-bold" for="name"1>Starting Price:</label>
+        <input type="number" @bind="@listingPrice" placeholder="" class="border-black border-2 px-4 py-2 rounded"/>
+        <label class="font-bold" for="description">Description:</label>
+        <input type="text" placeholder="Description" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="price">Degredation Level:</label>
+        <select type="select" placeholder="Level" class="border-black bg-white border-2 px-4 py-2 rounded">
+            @foreach (var level in levels)
+            {
+                <option>@level</option>
+            }
+        </select>
+        <label class="font-bold" for="image">Final Date:</label>
+        <input type="date" placeholder="Final Date" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="image">Collection:</label>
+        <select type="select" placeholder="Collection" class="border-black bg-white border-2 px-4 py-2 rounded">
+            @foreach (var collection in collections)
+            {
+                <option>@collection</option>
+            }
+        </select>
+        <label class="font-bold" for="description">Summary:</label>
+        <div class="flex flex-row justify-between border-b-[1px] py-1 border-gray-300">
+            <p>Listing Price:</p>
+            <p>@listingPrice €</p>
+        </div>
+        <div class="flex flex-row justify-between border-b-[1px] py-1 border-gray-300">
+            <p>Card Bid fee:</p>
+            <p>@bidFee €</p>
+        </div>
+        <div class="flex flex-row justify-between font-bold">
+            <p>Total potential earnings:</p>
+            <p>@(listingPrice - bidFee) €</p>
+        </div>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded w-96">Complete Listing</button>
+    </div>
+</div>
+<div class="bg-red h-full w-50">
+    <image src="https://via.placeholder.com/400" />
+</div>
+</div>
+
+@code {
+    private string[] levels = new string[] { "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"};
+    private string[] collections = new string[] { "Pokémon", "Yu-Gi-Oh", "Magic: The Gathering", "Dragon Ball Super", "Digimon" };
+    public int listingPrice = 110;
+    int bidFee = 10;
+}
