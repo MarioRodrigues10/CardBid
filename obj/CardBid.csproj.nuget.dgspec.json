@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/mario/CardBid/CardBid.csproj": {}
+    "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj": {}
   },
   "projects": {
-    "/home/mario/CardBid/CardBid.csproj": {
+    "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/mario/CardBid/CardBid.csproj",
+        "projectUniqueName": "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj",
         "projectName": "CardBid",
-        "projectPath": "/home/mario/CardBid/CardBid.csproj",
-        "packagesPath": "/home/mario/.nuget/packages/",
-        "outputPath": "/home/mario/CardBid/obj/",
+        "projectPath": "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj",
+        "packagesPath": "/home/jojocoelho/.nuget/packages/",
+        "outputPath": "/home/jojocoelho/Desktop/Projetos/CardBid/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/mario/.nuget/NuGet/NuGet.Config"
+          "/home/jojocoelho/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -37,6 +37,16 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -48,20 +58,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.14, 7.0.14]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[7.0.14, 7.0.14]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.14, 7.0.14]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -70,7 +66,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.115/RuntimeIdentifierGraph.json"
         }
       }
     }

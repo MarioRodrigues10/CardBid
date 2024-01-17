@@ -9,75 +9,77 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CardBid
 build_property.RootNamespace = CardBid
-build_property.ProjectDir = /home/mario/CardBid/
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = /home/jojocoelho/Desktop/Projetos/CardBid/
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /home/mario/CardBid
+build_property.MSBuildProjectDirectory = /home/jojocoelho/Desktop/Projetos/CardBid
 build_property._RazorSourceGeneratorDebug = 
 
-[/home/mario/CardBid/App.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/404.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/404.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvNDA0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/Cards/New.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Cards/New.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMvTmV3LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/CompleteListing.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/CompleteListing.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29tcGxldGVMaXN0aW5nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/Index.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/Login.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/LearnMore.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTGVhcm5Nb3JlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/Register.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Register.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/Teste.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Teste.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVGVzdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Shared/EmptyLayout.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Shared/EmptyLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0VtcHR5TGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Shared/Footer.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Shared/Footer.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0Zvb3Rlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Shared/Navbar.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Shared/Navbar.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdmJhci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/_Imports.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Shared/MainLayout.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-pnp0ngejd4
 
-[/home/mario/CardBid/Shared/NavMenu.razor]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-ubb6ge2c8w
 
-[/home/mario/CardBid/Pages/Error.cshtml]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/mario/CardBid/Pages/_Host.cshtml]
+[/home/jojocoelho/Desktop/Projetos/CardBid/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
