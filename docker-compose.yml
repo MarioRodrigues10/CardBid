@@ -1,5 +1,10 @@
 version: '3.9'
 
+name: online_auctions
+
+volumes:
+  db_data:
+
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -7,6 +12,7 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Password123
       - MSSQL_PID=Developer
+      - MSSQL_DBNAME=cardbid
     ports:
       - 1436:1433
     volumes:
@@ -22,13 +28,12 @@ services:
   db.configurator:
     image: mcr.microsoft.com/mssql/server:2022-latest
     volumes:
-      - ./DataMigration:/docker-entrypoint-initdb.d
+      - ./dataMigration:/docker-entrypoint-initdb.d
     depends_on:
       db:
         condition: service_healthy
     command: >
-      /opt/mssql-tools/bin/sqlcmd -S db -U sa -P Password123 -d master -i docker-entrypoint-initdb.d/init.sql \
-      && echo "Configuration done!"
-
-volumes:
-  db_data:
+      bash -c '
+      /opt/mssql-tools/bin/sqlcmd -S db -U sa -P Password123 -d master -i docker-entrypoint-initdb.d/init.sql;
+      echo "Configuration done!"
+      '

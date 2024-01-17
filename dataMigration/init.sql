@@ -1,4 +1,14 @@
--- init.sql
+USE master;
+GO
+
+PRINT 'Creating cardbid database...';
+CREATE DATABASE cardbid;
+PRINT 'cardbid database created.';
+GO
+
+USE cardbid;
+PRINT 'Switched to cardbid database...'
+GO
 
 -- Create Users table
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
@@ -15,10 +25,10 @@ BEGIN
     );
 END;
 
--- Create Cards table
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cards')
+-- Create Auctions table
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Auctions')
 BEGIN
-    CREATE TABLE Cards (
+    CREATE TABLE Auctions (
         Id INT PRIMARY KEY IDENTITY(1,1),
         Description NVARCHAR(MAX),
         ListingPrice DECIMAL(18, 2),
