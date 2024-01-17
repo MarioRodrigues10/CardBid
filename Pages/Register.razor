@@ -1,3 +1,4 @@
+@inject NavigationManager NavigationManager
 @page "/register"
 <div class="flex flex-col justify-center py-4 items-center h-fit min-h-screen">
     <h1 class="font-bold text-3xl py-2">Register</h1>
@@ -13,14 +14,25 @@
         <label class="font-bold" for="birthday">Birthday:</label>
         <input type="date" placeholder="Birthday" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="sex">Sex:</label>
-        <input type="text" placeholder="Sex" class="border-black border-2 px-4 py-2 rounded">
+        <select class="border-black bg-white border-2 px-4 py-2 rounded">
+            <option value="NotDisclosed">Not Disclosed</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
         <label class="font-bold" for="address">Address:</label>
         <input type="text" placeholder="Address" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="phone">Phone Number:</label>
         <input type="tel" placeholder="Phone Number" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="nif">NIF:</label>
-        <input type="number" placeholder="NIF" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="NIF" class="border-black border-2 px-4 py-2 rounded">
         <button class="bg-blue-500 text-white px-4 py-2 rounded w-96">Register</button>
-        <a href="">Already have an account? Login</a>
+        <a href="/login" class="button-like" @onclick="NavigateToLogin">Already have an account? Login</a>
     </div>
 </div>
+
+@code {
+    private void NavigateToLogin()
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+}
