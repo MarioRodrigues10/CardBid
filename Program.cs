@@ -13,7 +13,7 @@ builder.Services.AddServerSideBlazor();
 // Configure the DbContext
 builder.Services.AddDbContext<CardBidDbContext>(options =>
 {
-    options.UseSqlServer("Server=localhost,1436;Database=cardbid;User Id=sa;Password=Password123");
+    options.UseSqlServer("Server=localhost,1436;Database=cardbid;User Id=sa;Password=Password123;TrustServerCertificate=True");
 });
 
 var app = builder.Build();
