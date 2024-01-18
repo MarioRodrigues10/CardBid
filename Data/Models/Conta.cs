@@ -1,6 +1,10 @@
-﻿public class Conta
+﻿namespace CardBid.Data.Models
 {
-    public string NomeUtilizador { get; set; }
-    public string PalavraPasse { get; set; }
-    public int Utilizador_Id { get; set; }
+    public class Conta
+    {
+        public string NomeUtilizador { get; set; }
+        public string PalavraPasse { get; set; }
+        public int Utilizador_Id { get; set; }
+        public Utilizadores Utilizador { get; set; }
+    }
 }

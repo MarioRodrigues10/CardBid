@@ -1,17 +1,68 @@
+using CardBid.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class DbContext : Microsoft.EntityFrameworkCore.DbContext
+namespace CardBid.Data
 {
-    public DbContext(DbContextOptions<DbContext> options) : base(options)
+    public class CardBidDbContext : DbContext
     {
-    }
+        public CardBidDbContext(DbContextOptions<CardBidDbContext> options) : base(options)
+        {
+        }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Auction> Auctions { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
+        public DbSet<GrauDegradacao> GrauDegradacao { get; set; }
+        public DbSet<Utilizadores> Utilizadores { get; set; }
+        public DbSet<Conta> Conta { get; set; }
+        public DbSet<Leiloes> Leiloes { get; set; }
+        public DbSet<Faturas> Faturas { get; set; }
+        public DbSet<Fotos> Fotos { get; set; }
+        public DbSet<Licitacoes> Licitacoes { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<User>().ToTable("Users");
-        modelBuilder.Entity<Auction>().ToTable("Auctions");
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Leiloes>()
+                .HasOne(l => l.Licitacoes)
+                .WithMany()
+                .HasForeignKey(l => l.MaiorLicitacao)
+                .HasPrincipalKey(l => l.Id);
+
+            modelBuilder.Entity<Faturas>()
+                .HasOne(f => f.Comprador)
+                .WithMany()
+                .HasForeignKey(f => f.Comprador_Id)
+                .HasPrincipalKey(u => u.Id);
+
+            modelBuilder.Entity<Faturas>()
+                .HasOne(f => f.Leilao)
+                .WithMany()
+                .HasForeignKey(f => f.Leilao_Id)
+                .HasPrincipalKey(l => l.Id);
+
+            modelBuilder.Entity<Fotos>()
+                .HasOne(f => f.Leilao)
+                .WithMany()
+                .HasForeignKey(f => f.Leilao_Id)
+                .HasPrincipalKey(l => l.Id);
+
+            modelBuilder.Entity<Licitacoes>()
+                .HasOne(l => l.Licitante)
+                .WithMany()
+                .HasForeignKey(l => l.Licitante_Id)
+                .HasPrincipalKey(u => u.Id);
+
+            modelBuilder.Entity<Licitacoes>()
+                .HasOne(l => l.Leilao)
+                .WithMany()
+                .HasForeignKey(l => l.Leilao_Id)
+                .HasPrincipalKey(l => l.Id);
+
+            modelBuilder.Entity<Conta>()
+                .HasOne(c => c.Utilizador)
+                .WithMany()
+                .HasForeignKey(c => c.Utilizador_Id)
+                .HasPrincipalKey(u => u.Id);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

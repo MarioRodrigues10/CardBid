@@ -1,6 +1,12 @@
-﻿public class Conta
+﻿namespace CardBid.Data.Models
 {
-    public string NomeUtilizador { get; set; }
-    public byte[] PalavraPasse { get; set; }
-    public int Utilizador_Id { get; set; }
+    public class Faturas
+    {
+        public string Fatura { get; set; }
+        public int Id { get; set; }
+        public int Comprador_Id { get; set; }
+        public int Leilao_Id { get; set; }
+        public Utilizadores Comprador { get; set; }
+        public Leiloes Leilao { get; set; }
+    }
 }

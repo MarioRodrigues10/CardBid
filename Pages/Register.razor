@@ -1,38 +1,89 @@
-@inject NavigationManager NavigationManager
 @page "/register"
+@using CardBid.Data
+@using CardBid.Data.Models
+@inject NavigationManager NavigationManager
+@inject CardBidDbContext DbContext
+
 <div class="flex flex-col justify-center py-4 items-center h-fit min-h-screen">
     <h1 class="font-bold text-3xl py-2">Register</h1>
     <div class="flex flex-col space-y-4">
         <label class="font-bold" for="email">Email Address:</label>
-        <input type="text" placeholder="Email Address" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Email Address" @bind="Email" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="password">Password:</label>
-        <input type="password" placeholder="Password" class="border-black border-2 px-4 py-2 rounded">
-        <label class="font-bold" for="password">Confirm Password:</label>
-        <input type="password" placeholder="Confirm Password" class="border-black border-2 px-4 py-2 rounded">
+        <input type="password" placeholder="Password" @bind="Password" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="confirmPassword">Confirm Password:</label>
+        <input type="password" placeholder="Confirm Password" @bind="ConfirmPassword" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="name">Name:</label>
-        <input type="text" placeholder="Name" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Name" @bind="Name" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="birthday">Birthday:</label>
-        <input type="date" placeholder="Birthday" class="border-black border-2 px-4 py-2 rounded">
+        <input type="date" @bind="Birthday" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="sex">Sex:</label>
-        <select class="border-black bg-white border-2 px-4 py-2 rounded">
+        <select @bind="Sex" class="border-black bg-white border-2 px-4 py-2 rounded">
             <option value="NotDisclosed">Not Disclosed</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
         <label class="font-bold" for="address">Address:</label>
-        <input type="text" placeholder="Address" class="border-black border-2 px-4 py-2 rounded">
-        <label class="font-bold" for="phone">Phone Number:</label>
-        <input type="tel" placeholder="Phone Number" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Address" @bind="Address" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="phoneNumber">Phone Number:</label>
+        <input type="tel" placeholder="Phone Number" @bind="PhoneNumber" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="nif">NIF:</label>
-        <input type="number" placeholder="NIF" class="border-black border-2 px-4 py-2 rounded">
-        <button class="bg-blue-500 text-white px-4 py-2 rounded w-96">Register</button>
-        <a href="/login" class="button-like" @onclick="NavigateToLogin">Already have an account? Login</a>
+        <input type="number" placeholder="NIF" @bind="NIF" class="border-black border-2 px-4 py-2 rounded">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded w-96" @onclick="RegisterUser">Register</button>
+        <a href="/login" class="button-like">Already have an account? Login</a>
     </div>
 </div>
 
 @code {
-    private void NavigateToLogin()
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private string ConfirmPassword { get; set; }
+    private string Name { get; set; }
+    private DateTime Birthday { get; set; }
+    private string Sex { get; set; }
+    private string Address { get; set; }
+    private string PhoneNumber { get; set; }
+    private int NIF { get; set; }
+
+    private async Task RegisterUser()
+    {
+        // Create a new Utilizadores instance with the provided information
+        var newUser = new Utilizadores
         {
-            NavigationManager.NavigateTo("/login");
-        }
+            Email = Email,
+            Nome = Name,
+            DataDeNascimento = Birthday,
+            Genero = Sex,
+            Morada = Address,
+            Telefone = Convert.ToInt32(PhoneNumber),
+            NIF = NIF
+        };
+
+        // Add the new user to the DbContext
+        DbContext.Utilizadores.Add(newUser);
+
+        // Save changes to the database
+        await DbContext.SaveChangesAsync();
+
+        // Create a new Conta instance for the user
+        var newConta = new Conta
+        {
+            NomeUtilizador = Email,
+            PalavraPasse = Password,
+            UtilizadorId = newUser.Id
+        };
+
+        // Add the new Conta to the DbContext
+        DbContext.Contas.Add(newConta);
+
+        // Save changes to the database
+        await DbContext.SaveChangesAsync();
+
+        NavigateToLogin();
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
 }

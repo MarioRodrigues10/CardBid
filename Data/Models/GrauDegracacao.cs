@@ -1,5 +1,8 @@
-﻿public class GrauDegradacao
+﻿namespace CardBid.Data.Models
 {
-    public int GrauDegradacao { get; set; }
-    public string Designacao { get; set; }
+    public class GrauDegradacao
+    {
+        public int GrauDegradacaoId { get; set; }
+        public string Designacao { get; set; }
+    }
 }

@@ -22,7 +22,7 @@ END;
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'GrauDegradacao')
 BEGIN
     CREATE TABLE GrauDegradacao (
-        GrauDegradacao INT NOT NULL PRIMARY KEY,
+        grauDegradacao INT NOT NULL PRIMARY KEY,
         Designacao VARCHAR(20) NOT NULL
     );
 END;
@@ -36,7 +36,7 @@ BEGIN
         Email VARCHAR(45) NOT NULL UNIQUE,
         Nome VARCHAR(45) NOT NULL,
         DataDeNascimento DATE NOT NULL,
-        Genero CHAR NOT NULL,
+        Genero VARCHAR(15) NOT NULL,
         Telefone INT NOT NULL,
         Morada VARCHAR(100) NOT NULL
     );
