@@ -47,7 +47,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Conta
 BEGIN
     CREATE TABLE Conta (
         NomeUtilizador VARCHAR(20) NOT NULL PRIMARY KEY,
-        PalavraPasse VARBINARY(52) NOT NULL,
+        PalavraPasse Varchar(52) NOT NULL,
         Utilizador_Id INT REFERENCES Utilizadores(Id)
     );
 END;
