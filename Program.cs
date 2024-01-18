@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using CardBid.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 // Configure the DbContext
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<CardBidDbContext>(options =>
 {
-    options.UseSqlServer("Server=localhost;Database=cardbid;Trusted_Connection=True;");
+    options.UseSqlServer("Server=localhost,1436;Database=cardbid;User Id=sa;Password=Password123");
 });
 
 var app = builder.Build();
