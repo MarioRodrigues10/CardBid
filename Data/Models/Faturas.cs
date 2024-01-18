@@ -6,7 +6,7 @@
         public string Fatura { get; set; }
         public int Comprador_Id { get; set; }
         public int Leilao_Id { get; set; }
-    
+
         public Faturas() { }
 
         public Faturas(int id, string fatura, int comprador_id, int leilao_id)

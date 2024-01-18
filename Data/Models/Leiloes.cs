@@ -1,5 +1,3 @@
-using System.Data;
-
 namespace CardBid.Data.Models
 {
     public class Leiloes
@@ -16,8 +14,8 @@ namespace CardBid.Data.Models
         public string Titulo { get; set; }
         public Leiloes() { }
 
-        public Leiloes(int id, DateTime DataLimite, decimal PrecoInicial, string Estado, 
-            int GrauDeDegradacao, string Descricao, int Vendedor_Id, string Categoria, 
+        public Leiloes(int id, DateTime DataLimite, decimal PrecoInicial, string Estado,
+            int GrauDeDegradacao, string Descricao, int Vendedor_Id, string Categoria,
             int? MaiorLicitacao, string Titulo)
         {
             Id = id;
@@ -32,7 +30,7 @@ namespace CardBid.Data.Models
             this.Titulo = Titulo;
         }
 
-        public Leiloes(DateTime DataLimite, decimal PrecoInicial, string Estado, int GrauDeDegradacao, 
+        public Leiloes(DateTime DataLimite, decimal PrecoInicial, string Estado, int GrauDeDegradacao,
             string Descricao, int Vendedor_Id, string Categoria, string Titulo)
         {
             this.DataLimite = DataLimite;

@@ -26,10 +26,10 @@ namespace CardBid.Data
 
             });
 
-            modelBuilder.Entity <GrauDegradacao>(entity =>
+            modelBuilder.Entity<GrauDegradacao>(entity =>
             {
                 entity.HasKey(e => e.grauDegradacao);
-            
+
                 entity.Property(e => e.Designacao).IsRequired().HasColumnName("descricao").HasMaxLength(20);
             });
 
@@ -70,7 +70,7 @@ namespace CardBid.Data
                     .HasColumnName("Morada")
                     .HasMaxLength(100);
 
-                entity.HasIndex(e => new {e.Email, e.NIF})
+                entity.HasIndex(e => new { e.Email, e.NIF })
                     .IsUnique();
             });
 

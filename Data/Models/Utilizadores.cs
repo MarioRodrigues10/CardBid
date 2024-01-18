@@ -11,7 +11,7 @@ namespace CardBid.Data.Models
         public int Telefone { get; set; }
         public string Morada { get; set; }
         public Utilizadores() { }
-    
+
         public Utilizadores(int id, int nif, string email, string nome, DateTime dataDeNascimento, char genero, int telefone, string morada)
         {
             Id = id;

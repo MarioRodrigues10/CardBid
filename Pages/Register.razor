@@ -9,10 +9,16 @@
     <div class="flex flex-col space-y-4">
         <label class="font-bold" for="email">Email Address:</label>
         <input type="text" placeholder="Email Address" @bind="Email" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="email">UserName:</label>
+        <input type="text" placeholder="Username" @bind="Username" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="password">Password:</label>
         <input type="password" placeholder="Password" @bind="Password" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="confirmPassword">Confirm Password:</label>
-        <input type="password" placeholder="Confirm Password" @bind="ConfirmPassword" class="border-black border-2 px-4 py-2 rounded">
+        <input type="password" placeholder="Confirm Password" @bind="ConfirmPassword" @ref="confirmPasswordInput" class="border-black border-2 px-4 py-2 rounded">
+        @if (!string.IsNullOrEmpty(ErrorMessagePassword))
+        {
+            <p class="text-red-500">@ErrorMessagePassword</p>
+        }
         <label class="font-bold" for="name">Name:</label>
         <input type="text" placeholder="Name" @bind="Name" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="birthday">Birthday:</label>
@@ -30,12 +36,19 @@
         <label class="font-bold" for="nif">NIF:</label>
         <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="NIF" @bind="NIF" class="border-black border-2 px-4 py-2 rounded">
         <button class="bg-blue-500 text-white px-4 py-2 rounded w-96" @onclick="RegisterUser">Register</button>
+
+        @if (!string.IsNullOrEmpty(ErrorMessageRegister))
+        {
+            <p class="text-red-500">@ErrorMessageRegister</p>
+        }
+
         <a href="/login" class="button-like">Already have an account? Login</a>
     </div>
 </div>
 
 @code {
     private string Email { get; set; }
+private string Username { get; set; }
     private string Password { get; set; }
     private string ConfirmPassword { get; set; }
     private string Name { get; set; }
@@ -45,41 +58,93 @@
     private int PhoneNumber { get; set; }
     private int NIF { get; set; }
 
+    private bool IsPasswordValid => Password == ConfirmPassword;
+    private string ErrorMessagePassword { get; set; }
+    private string ErrorMessageRegister { get; set; }
+    private ElementReference confirmPasswordInput;
+
     private async Task RegisterUser()
     {
+        if (Password != ConfirmPassword || Password == null)
+        {
+            ErrorMessagePassword = "Passwords do not match!";
+            await confirmPasswordInput.FocusAsync();
+            return;
+        }
+
+        if ((NIF < 100000000 && NIF > 999999999) || (PhoneNumber < 100000000 && PhoneNumber > 999999999))
+        {
+            ErrorMessageRegister = "Numbers Invalid!";
+            return;
+        }
+
+        if (Birthday > DateTime.Now.AddYears(-18))
+        {
+            ErrorMessageRegister = "You must be 18 years old to register!";
+            return;
+        } 
+
+
+        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Username))
+        {
+            ErrorMessageRegister = "Please fill all the required fields!";
+            return;
+        }
+
         // Create a new Utilizadores instance with the provided information
         var newUser = new Utilizadores
+            {
+                NIF = NIF,
+                Email = Email,
+                Nome = Name,
+                DataDeNascimento = Birthday,
+                Genero = Sex[0],
+                Telefone = PhoneNumber,
+                Morada = Address
+            };
+
+        try
         {
-            NIF = NIF,
-            Email = Email,
-            Nome = Name,
-            DataDeNascimento = Birthday,
-            Genero = Sex[0],
-            Telefone = PhoneNumber,
-            Morada = Address
-        };
+            // Add the new user to the DbContext
+            DbContext.Utilizadores.Add(newUser);
 
-        // Add the new user to the DbContext
-        DbContext.Utilizadores.Add(newUser);
+            // Save changes to the database
+            await DbContext.SaveChangesAsync();
 
-        // Save changes to the database
-        await DbContext.SaveChangesAsync();
+            // Create a new Conta instance for the user
+            var newConta = new Conta
+                {
+                    NomeUtilizador = Username,
+                    PalavraPasse = Password,
+                    Utilizador_Id = newUser.Id
+                };
 
-        // Create a new Conta instance for the user
-        var newConta = new Conta
+            // Add the new Conta to the DbContext
+            DbContext.Conta.Add(newConta);
+
+            // Save changes to the database
+            await DbContext.SaveChangesAsync();
+
+            NavigateToLogin();
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
         {
-            NomeUtilizador = Email,
-            PalavraPasse = Password,
-            Utilizador_Id = newUser.Id
-        };
-
-        // Add the new Conta to the DbContext
-        DbContext.Conta.Add(newConta);
-
-        // Save changes to the database
-        await DbContext.SaveChangesAsync();
-
-        NavigateToLogin();
+            if (ex.InnerException is Microsoft.Data.SqlClient.SqlException sqlException)
+            {
+                if (sqlException.Number == 2627)
+                {
+                    ErrorMessageRegister = "Data already exists!";  
+                }
+            }
+            else 
+            {
+                ErrorMessageRegister = "An error occurred while trying to register the user.";
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessageRegister = "Exption unhandled!";
+        }
     }
 
     private void NavigateToLogin()

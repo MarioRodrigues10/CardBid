@@ -9,7 +9,7 @@
         public DateTime Data { get; set; }
 
         public Licitacoes() { }
-        
+
         public Licitacoes(int id, decimal valor, int licitante_Id, int leilao_Id, DateTime data)
         {
             Valor = valor;

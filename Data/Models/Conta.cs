@@ -6,9 +6,9 @@
         public string PalavraPasse { get; set; }
         public int Utilizador_Id { get; set; }
 
-        public Conta () { }
+        public Conta() { }
 
-        public Conta (string nomeUtilizador, string PalavaPasse, int Utilizador_Id)
+        public Conta(string nomeUtilizador, string PalavaPasse, int Utilizador_Id)
         {
             NomeUtilizador = nomeUtilizador;
             PalavraPasse = PalavraPasse;
