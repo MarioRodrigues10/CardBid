@@ -20,47 +20,105 @@ namespace CardBid.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Leiloes>()
-                .HasOne(l => l.Vendedor)
-                .WithMany()
-                .HasForeignKey(l => l.MaiorLicitacao)
-                .HasPrincipalKey(l => l.Id);
+            modelBuilder.Entity<Categorias>(entity =>
+            {
+                entity.HasKey(e => e.Nome);
 
-            modelBuilder.Entity<Faturas>()
-                .HasOne(f => f.Comprador)
-                .WithMany()
-                .HasForeignKey(f => f.Comprador_Id)
-                .HasPrincipalKey(u => u.Id);
+            });
 
-            modelBuilder.Entity<Faturas>()
-                .HasOne(f => f.Leilao)
-                .WithMany()
-                .HasForeignKey(f => f.Leilao_Id)
-                .HasPrincipalKey(l => l.Id);
+            modelBuilder.Entity <GrauDegradacao>(entity =>
+            {
+                entity.HasKey(e => e.grauDegradacao);
+            
+                entity.Property(e => e.Designacao).IsRequired().HasColumnName("descricao").HasMaxLength(20);
+            });
 
-            modelBuilder.Entity<Fotos>()
-                .HasOne(f => f.Leilao)
-                .WithMany()
-                .HasForeignKey(f => f.Leilao_Id)
-                .HasPrincipalKey(l => l.Id);
+            modelBuilder.Entity<Utilizadores>(entity =>
+            {
+                entity.HasKey(e => e.Id);
 
-            modelBuilder.Entity<Licitacoes>()
-                .HasOne(l => l.Licitante)
-                .WithMany()
-                .HasForeignKey(l => l.Licitante_Id)
-                .HasPrincipalKey(u => u.Id);
+                entity.Property(e => e.Nome)
+                    .IsRequired()
+                    .HasColumnName("Nome")
+                    .HasMaxLength(55);
 
-            modelBuilder.Entity<Licitacoes>()
-                .HasOne(l => l.Leilao)
-                .WithMany()
-                .HasForeignKey(l => l.Leilao_Id)
-                .HasPrincipalKey(l => l.Id);
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnName("Email")
+                    .HasMaxLength(45);
 
-            modelBuilder.Entity<Conta>()
-                .HasOne(c => c.Utilizador)
-                .WithMany()
-                .HasForeignKey(c => c.Utilizador_Id)
-                .HasPrincipalKey(u => u.Id);
+                entity.Property(e => e.Genero)
+                    .IsRequired()
+                    .HasColumnName("Genero")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.DataDeNascimento)
+                    .IsRequired()
+                    .HasColumnName("DataDeNascimento")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Telefone)
+                    .IsRequired()
+                    .HasColumnName("Telefone");
+
+                entity.Property(e => e.NIF)
+                    .IsRequired()
+                    .HasColumnName("NIF");
+
+                entity.Property(e => e.Morada)
+                    .IsRequired()
+                    .HasColumnName("Morada")
+                    .HasMaxLength(100);
+
+                entity.HasIndex(e => new {e.Email, e.NIF})
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<Conta>(entity =>
+            {
+                entity.HasKey(e => e.NomeUtilizador);
+                entity.Property(e => e.PalavraPasse).IsRequired();
+                entity.Property(e => e.Utilizador_Id).IsRequired();
+            });
+
+            modelBuilder.Entity<Leiloes>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.DataLimite).IsRequired();
+                entity.Property(e => e.PrecoInicial).IsRequired();
+                entity.Property(e => e.Estado).IsRequired().HasMaxLength(11);
+                entity.Property(e => e.GrauDeDegradacao).IsRequired();
+                entity.Property(e => e.Descricao).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Vendedor_Id).IsRequired();
+                entity.Property(e => e.Categoria).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.MaiorLicitacao).IsRequired();
+                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
+
+            });
+
+            modelBuilder.Entity<Faturas>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Fatura).IsRequired();
+                entity.Property(e => e.Comprador_Id).IsRequired();
+                entity.Property(e => e.Leilao_Id).IsRequired();
+
+            });
+
+            modelBuilder.Entity<Fotos>(entity =>
+            {
+                entity.HasKey(e => new { e.Leilao_Id, e.Foto });
+            });
+
+            modelBuilder.Entity<Licitacoes>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Valor).IsRequired();
+                entity.Property(e => e.Licitante_Id).IsRequired();
+                entity.Property(e => e.Leilao_Id).IsRequired();
+                entity.Property(e => e.Data).IsRequired();
+
+            });
 
             base.OnModelCreating(modelBuilder);
         }
