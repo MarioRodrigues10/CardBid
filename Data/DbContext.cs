@@ -21,7 +21,7 @@ namespace CardBid.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Leiloes>()
-                .HasOne(l => l.Licitacoes)
+                .HasOne(l => l.Vendedor)
                 .WithMany()
                 .HasForeignKey(l => l.MaiorLicitacao)
                 .HasPrincipalKey(l => l.Id);

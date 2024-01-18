@@ -70,11 +70,11 @@
         {
             NomeUtilizador = Email,
             PalavraPasse = Password,
-            UtilizadorId = newUser.Id
+            Utilizador_Id = newUser.Id
         };
 
         // Add the new Conta to the DbContext
-        DbContext.Contas.Add(newConta);
+        DbContext.Conta.Add(newConta);
 
         // Save changes to the database
         await DbContext.SaveChangesAsync();
