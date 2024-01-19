@@ -1,15 +1,19 @@
 @page "/register"
 @using CardBid.Data
 @using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@using CardBid.Exceptions
 @inject NavigationManager NavigationManager
 @inject CardBidDbContext DbContext
+@inject IUtilizadoresData UtilizadoresService
+@inject IContaData ContaService
 
 <div class="flex flex-col justify-center py-4 items-center h-fit min-h-screen">
     <h1 class="font-bold text-3xl py-2">Register</h1>
     <div class="flex flex-col space-y-4">
         <label class="font-bold" for="email">Email Address:</label>
         <input type="text" placeholder="Email Address" @bind="Email" class="border-black border-2 px-4 py-2 rounded">
-        <label class="font-bold" for="email">UserName:</label>
+        <label class="font-bold" for="username">UserName:</label>
         <input type="text" placeholder="Username" @bind="Username" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="password">Password:</label>
         <input type="password" placeholder="Password" @bind="Password" class="border-black border-2 px-4 py-2 rounded">
@@ -48,7 +52,7 @@
 
 @code {
     private string Email { get; set; }
-private string Username { get; set; }
+    private string Username { get; set; }
     private string Password { get; set; }
     private string ConfirmPassword { get; set; }
     private string Name { get; set; }
@@ -65,6 +69,9 @@ private string Username { get; set; }
 
     private async Task RegisterUser()
     {
+        ErrorMessagePassword = string.Empty;
+        ErrorMessageRegister = string.Empty;
+
         if (Password != ConfirmPassword || Password == null)
         {
             ErrorMessagePassword = "Passwords do not match!";
@@ -108,49 +115,25 @@ private string Username { get; set; }
                 Telefone = PhoneNumber,
                 Morada = Address
             };
-
         try
         {
-            // Add the new user to the DbContext
-            DbContext.Utilizadores.Add(newUser);
+            var u = await UtilizadoresService.AddUtilizador(newUser);
 
-            // Save changes to the database
-            await DbContext.SaveChangesAsync();
-
-            // Create a new Conta instance for the user
-            var newConta = new Conta
-                {
-                    NomeUtilizador = Username,
-                    PalavraPasse = Password,
-                    Utilizador_Id = newUser.Id
-                };
-
-            // Add the new Conta to the DbContext
-            DbContext.Conta.Add(newConta);
-
-            // Save changes to the database
-            await DbContext.SaveChangesAsync();
-
-            NavigateToLogin();
-        }
-        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
-        {
-            if (ex.InnerException is Microsoft.Data.SqlClient.SqlException sqlException)
+            var c = new Conta
             {
-                if (sqlException.Number == 2627)
-                {
-                    ErrorMessageRegister = "Data already exists!";  
-                }
-            }
-            else 
-            {
-                ErrorMessageRegister = "An error occurred while trying to register the user.";
-            }
+                NomeUtilizador = Username,
+                PalavraPasse = Password,
+                Utilizador_Id = u.Id
+            };
+
+            await ContaService.AddConta(c);
         }
-        catch (Exception e)
+        catch (UserRegisterException e)
         {
-            ErrorMessageRegister = "Exption unhandled!";
+            ErrorMessageRegister = e.Message;
+            return;
         }
+        NavigateToLogin();
     }
 
     private void NavigateToLogin()

@@ -8,11 +8,17 @@
 
         public Conta() { }
 
-        public Conta(string nomeUtilizador, string PalavaPasse, int Utilizador_Id)
+        public Conta(string nomeUtilizador, string palavraPasse, int utilizador_Id)
         {
             NomeUtilizador = nomeUtilizador;
-            PalavraPasse = PalavraPasse;
-            Utilizador_Id = Utilizador_Id;
+            PalavraPasse = palavraPasse;
+            Utilizador_Id = utilizador_Id;
+        }
+
+        public Conta(string nomeUtilizador, string palavraPasse)
+        {
+            NomeUtilizador = nomeUtilizador;
+            PalavraPasse = palavraPasse;
         }
     }
 }
