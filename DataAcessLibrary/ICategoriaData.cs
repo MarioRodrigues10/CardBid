@@ -5,7 +5,7 @@ namespace CardBid.DataAcessLibrary
 {
     public interface ICategoriaData
     {
-        public Task<List<Categorias>> GetCategorias();
+        public List<Categorias> GetCategorias();
         public Task<Categorias> GetCategoria(string nome);
 
     }

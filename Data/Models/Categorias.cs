@@ -2,13 +2,13 @@
 {
     public class Categorias
     {
-        public string Nome { get; set; }
+        public string categoria { get; set; }
 
         public Categorias() { }
 
         public Categorias(string nome)
         {
-            Nome = nome;
+            categoria = nome;
         }
     }
 }

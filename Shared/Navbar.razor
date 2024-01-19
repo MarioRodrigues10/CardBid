@@ -1,5 +1,5 @@
 @inject NavigationManager NavigationManager
-
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 <div class="flex px-4 py-2 w-full justify-between border-b-[1px] border-black">
     <div class="flex items-center space-x-4">
         <button class="text-black px-4 py-2 rounded">Buy Cards</button>
@@ -18,9 +18,18 @@
             NavigationManager.NavigateTo("/login");
         }
 
-    private void NavigateToSellCard()
+    private async Task NavigateToSellCard()
         {
-            NavigationManager.NavigateTo("/card/new");
+            var username = await LocalStorage.GetItemAsync<string>("username");
+                
+            if (username != null)
+            {
+                NavigationManager.NavigateTo("/card/new");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
         } 
 
     private void NavigateToHomePage()

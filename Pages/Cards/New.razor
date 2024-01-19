@@ -1,4 +1,7 @@
 @page "/card/new"
+@using CardBid.DataAcessLibrary;
+@inject ICategoriaData categoriaService
+@inject IGrauDegradacaoData grauDegradacaoService
 
 <div class="flex flex-row justify-center space-x-12 py-4 items-center h-fit min-h-screen">
     <div>
@@ -18,7 +21,7 @@
         <label class="font-bold" for="image">Final Date:</label>
         <input type="date" placeholder="Final Date" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="image">Collection:</label>
-        <select type="select" placeholder="Collection" class="border-black bg-white border-2 px-4 py-2 rounded">
+        <select type="select" placeholder="Collection" class="border-black bg-white border-2 px-4 py-2 rounded"> 
             @foreach (var collection in collections)
             {
                 <option>@collection</option>
@@ -46,8 +49,17 @@
 </div>
 
 @code {
-    private string[] levels = new string[] { "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"};
-    private string[] collections = new string[] { "Pokémon", "Yu-Gi-Oh", "Magic: The Gathering", "Dragon Ball Super", "Digimon" };
+    private string[] levels;
+    private string[] collections;
     public int listingPrice = 110;
     int bidFee = 10;
+
+    protected override void OnInitialized()
+    {
+        var list_levels = grauDegradacaoService.GetGrausDegradacao();
+        var list_collections = categoriaService.GetCategorias();
+
+        levels = list_levels.Select(level => level.Designacao).ToArray();
+        collections = list_collections.Select(collection => collection.categoria).ToArray();
+    }
 }

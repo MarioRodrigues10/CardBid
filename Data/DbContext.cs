@@ -22,7 +22,7 @@ namespace CardBid.Data
         {
             modelBuilder.Entity<Categorias>(entity =>
             {
-                entity.HasKey(e => e.Nome);
+                entity.HasKey(e => e.categoria);
 
             });
 
@@ -30,7 +30,7 @@ namespace CardBid.Data
             {
                 entity.HasKey(e => e.grauDegradacao);
 
-                entity.Property(e => e.Designacao).IsRequired().HasColumnName("descricao").HasMaxLength(20);
+                entity.Property(e => e.Designacao).IsRequired().HasColumnName("Designacao").HasMaxLength(20);
             });
 
             modelBuilder.Entity<Utilizadores>(entity =>
@@ -121,31 +121,6 @@ namespace CardBid.Data
                 entity.Property(e => e.Data).IsRequired();
 
             });
-
-            modelBuilder.Entity<Categorias>().HasData(
-                new Categorias { Nome = "Pokémon" },
-                new Categorias { Nome = "Yu-Gi-Oh!" },
-                new Categorias { Nome = "Magic: The Gathering" },
-                new Categorias { Nome = "Dragon Ball Super" },
-                new Categorias { Nome = "HearthStone" },
-                new Categorias { Nome = "One piece" },
-                new Categorias { Nome = "Futebol" },
-                new Categorias { Nome = "Basquetebol" }
-            );
-
-            modelBuilder.Entity<GrauDegradacao>().HasData(
-                new GrauDegradacao { grauDegradacao = 1, Designacao = "Poor" },
-                new GrauDegradacao { grauDegradacao = 2, Designacao = "Poor-Good" },
-                new GrauDegradacao { grauDegradacao = 3, Designacao = "Good" },
-                new GrauDegradacao { grauDegradacao = 4, Designacao = "Very Good" },
-                new GrauDegradacao { grauDegradacao = 5, Designacao = "Light Played" },
-                new GrauDegradacao { grauDegradacao = 6, Designacao = "Excellent" },
-                new GrauDegradacao { grauDegradacao = 7, Designacao = "Excellent-Near Mint" },
-                new GrauDegradacao { grauDegradacao = 8, Designacao = "Near Mint" },
-                new GrauDegradacao { grauDegradacao = 9, Designacao = "Mint" },
-                new GrauDegradacao { grauDegradacao = 10, Designacao = "Gem Mint" }
-            );
-
 
             base.OnModelCreating(modelBuilder);
         }

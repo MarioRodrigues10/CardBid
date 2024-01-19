@@ -52,7 +52,7 @@ BEGIN
     CREATE TABLE Conta (
         NomeUtilizador VARCHAR(20) NOT NULL PRIMARY KEY,
         PalavraPasse Varchar(52) NOT NULL,
-        Utilizador_Id INT REFERENCES Utilizadores(Id)
+        UtilizadorId INT REFERENCES Utilizadores(Id)
     );
 END;
 
@@ -66,7 +66,7 @@ BEGIN
         Estado VARCHAR(11) NOT NULL CHECK (Estado IN ('Finalizado', 'Recusado', 'Aceite', 'Pendente')),
         GrauDeDegradacao INT NOT NULL REFERENCES GrauDegradacao(GrauDegradacao),
         Descricao VARCHAR(200) NOT NULL,
-        Vendedor_Id INT NOT NULL REFERENCES Utilizadores(Id),
+        VendedorId INT NOT NULL REFERENCES Utilizadores(Id),
         Categoria VARCHAR(20) NOT NULL REFERENCES Categorias(categoria),
         MaiorLicitacao INT,
         Titulo VARCHAR(50) NOT NULL
@@ -79,8 +79,8 @@ BEGIN
     CREATE TABLE Faturas (
         Fatura VARCHAR(1000) NOT NULL,
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        Comprador_Id INT NOT NULL REFERENCES Utilizadores(Id),
-        Leilao_Id INT NOT NULL REFERENCES Leiloes(Id)
+        CompradorId INT NOT NULL REFERENCES Utilizadores(Id),
+        LeilaoId INT NOT NULL REFERENCES Leiloes(Id)
     );
 END;
 
@@ -89,8 +89,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Fotos
 BEGIN
     CREATE TABLE Fotos (
         Foto VARCHAR(256) NOT NULL,
-        Leilao_Id INT NOT NULL REFERENCES Leiloes(Id),
-        PRIMARY KEY (Leilao_Id, Foto)
+        LeilaoId INT NOT NULL REFERENCES Leiloes(Id),
+        PRIMARY KEY (LeilaoId, Foto)
     );
 END;
 
@@ -100,8 +100,8 @@ BEGIN
     CREATE TABLE Licitacoes (
         Valor DECIMAL(6, 2) NOT NULL,
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        Licitante_Id INT NOT NULL REFERENCES Utilizadores(Id),
-        Leilao_Id INT REFERENCES Leiloes(Id),
+        LicitanteId INT NOT NULL REFERENCES Utilizadores(Id),
+        LeilaoId INT REFERENCES Leiloes(Id),
         Data DATETIME NOT NULL
     );
 END;
@@ -114,3 +114,34 @@ BEGIN
     FOREIGN KEY (MaiorLicitacao) REFERENCES Licitacoes(Id);
 END;
 
+-- Seed data for Categorias
+IF NOT EXISTS (SELECT 1 FROM Categorias)
+BEGIN
+    INSERT INTO Categorias (categoria)
+    VALUES 
+      ('Pokémon'),
+      ('Yu-Gi-Oh!'),
+      ('Magic: The Gathering'),
+      ('Dragon Ball Super'),
+      ('HearthStone'),
+      ('One piece'),
+      ('Futebol'),
+      ('Basquetebol');
+END
+
+-- Seed data for GrauDegradacao
+IF NOT EXISTS (SELECT 1 FROM GrauDegradacao)
+BEGIN
+    INSERT INTO GrauDegradacao (grauDegradacao, Designacao)
+    VALUES 
+      (1, 'Poor'),
+      (2, 'Poor-Good'),
+      (3, 'Good'),
+      (4, 'Very Good'),
+      (5, 'Light Played'),
+      (6, 'Excellent'),
+      (7, 'Excellent-Near Mint'),
+      (8, 'Near Mint'),
+      (9, 'Mint'),
+      (10, 'Gem Mint');
+END

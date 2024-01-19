@@ -13,10 +13,10 @@ namespace CardBid.DataAcessLibrary
             _db = db;
         }
 
-        public async Task<List<Categorias>> GetCategorias()
+        public List<Categorias> GetCategorias()
         {
             //get all the categorias from the database
-            var categorias = await _db.Categorias.ToListAsync();
+            var categorias = _db.Categorias.ToList();
             return categorias;
         }
 
