@@ -5,23 +5,23 @@ namespace CardBid.DataAcessLibrary
 {
     public class GrauDegradacaoService : IGrauDegradacaoData
     {
-        private readonly ApplicationDbContext _db;
+        private readonly CardBidDbContext _db;
 
-        public GrauDegradacaoService(ApplicationDbContext db)
+        public GrauDegradacaoService(CardBidDbContext db)
         {
             _db = db;
         }
 
-        public Task<List<GrauDegradacao>> GetGrausDegradacao()
+        public List<GrauDegradacao> GetGrausDegradacao()
         {
-            var grausDegradacao = await _db.GrausDegradacao.ToListAsync();
+            var grausDegradacao = _db.GrauDegradacao.ToList();
             return grausDegradacao;
         }
 
-        public Task<GrauDegradacao> GetGrauDegradacao(int grauDegradacao)
+        public async Task<GrauDegradacao> GetGrauDegradacao(int grauDegradacao)
         {
-            var grauDegradacao = await _db.GrausDegradacao.FindAsync(grauDegradacao);
-            return grauDegradacao;
+            var gd = await _db.GrauDegradacao.FindAsync(grauDegradacao);
+            return gd;
         }
     }
 

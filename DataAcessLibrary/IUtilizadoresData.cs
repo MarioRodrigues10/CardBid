@@ -3,6 +3,6 @@ namespace CardBid.DataAcessLibrary
 {
     public interface IUtilizadoresData
     {
-        Task<Utilizadores>AddUtilizador(Utilizadores utilizador);
+        Task<Utilizadores> AddUtilizador(Utilizadores utilizador);
     }
 }

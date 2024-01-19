@@ -80,7 +80,7 @@ namespace CardBid.Data
             {
                 entity.HasKey(e => e.NomeUtilizador);
                 entity.Property(e => e.PalavraPasse).IsRequired();
-                entity.Property(e => e.Utilizador_Id).IsRequired();
+                entity.Property(e => e.UtilizadorId).IsRequired();
             });
 
             modelBuilder.Entity<Leiloes>(entity =>
@@ -91,7 +91,7 @@ namespace CardBid.Data
                 entity.Property(e => e.Estado).IsRequired().HasMaxLength(11);
                 entity.Property(e => e.GrauDeDegradacao).IsRequired();
                 entity.Property(e => e.Descricao).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.Vendedor_Id).IsRequired();
+                entity.Property(e => e.VendedorId).IsRequired();
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.MaiorLicitacao).IsRequired();
                 entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
@@ -102,22 +102,22 @@ namespace CardBid.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Fatura).IsRequired();
-                entity.Property(e => e.Comprador_Id).IsRequired();
-                entity.Property(e => e.Leilao_Id).IsRequired();
+                entity.Property(e => e.CompradorId).IsRequired();
+                entity.Property(e => e.LeilaoId).IsRequired();
 
             });
 
             modelBuilder.Entity<Fotos>(entity =>
             {
-                entity.HasKey(e => new { e.Leilao_Id, e.Foto });
+                entity.HasKey(e => new { e.LeilaoId, e.Foto });
             });
 
             modelBuilder.Entity<Licitacoes>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Valor).IsRequired();
-                entity.Property(e => e.Licitante_Id).IsRequired();
-                entity.Property(e => e.Leilao_Id).IsRequired();
+                entity.Property(e => e.LicitanteId).IsRequired();
+                entity.Property(e => e.LeilaoId).IsRequired();
                 entity.Property(e => e.Data).IsRequired();
 
             });

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CardBid.DataAcessLibrary
 {
-    public class ContaService : IContaData 
+    public class ContaService : IContaData
     {
         private readonly CardBidDbContext _db;
 
@@ -32,22 +32,23 @@ namespace CardBid.DataAcessLibrary
                     if (sqlException.Number == 2627)
                     {
                         _db.ChangeTracker.Clear();
-                        var entityToRemove = await _db.Utilizadores.FindAsync(conta.Utilizador_Id);
+                        var entityToRemove = await _db.Utilizadores.FindAsync(conta.UtilizadorId);
 
                         if (entityToRemove != null)
                         {
-                            _db.Utilizadores.Remove(entityToRemove); 
+                            _db.Utilizadores.Remove(entityToRemove);
                             await _db.SaveChangesAsync();
                         }
 
-                        throw new UserRegisterException ("Username already exists!");
+                        throw new UserRegisterException("Username already exists!");
                     }
                 }
                 else
                 {
                     throw new UserRegisterException("An error occurred while trying to register the account.");
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new UserRegisterException(ex.Message);
             }

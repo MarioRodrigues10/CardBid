@@ -1,5 +1,6 @@
 ﻿using CardBid.Data;
 using CardBid.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CardBid.DataAcessLibrary
 {
@@ -12,9 +13,10 @@ namespace CardBid.DataAcessLibrary
             _db = db;
         }
 
-        public List<Leiloes> ListAll()
+        public async Task<List<Leiloes>> ListAll()
         {
-            return _db.Leiloes.ToList();
+            var leiloes = await _db.Leiloes.ToListAsync();
+            return leiloes;
         }
 
         public async Task<Leiloes> AddLeilao(Leiloes leilao)

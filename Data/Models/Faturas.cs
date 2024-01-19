@@ -4,24 +4,24 @@
     {
         public int Id { get; set; }
         public string Fatura { get; set; }
-        public int Comprador_Id { get; set; }
-        public int Leilao_Id { get; set; }
+        public int CompradorId { get; set; }
+        public int LeilaoId { get; set; }
 
         public Faturas() { }
 
-        public Faturas(int id, string fatura, int comprador_id, int leilao_id)
+        public Faturas(int id, string fatura, int compradorid, int leilaoid)
         {
             Id = id;
             Fatura = fatura;
-            Comprador_Id = comprador_id;
-            Leilao_Id = leilao_id;
+            CompradorId = compradorid;
+            LeilaoId = leilaoid;
         }
 
-        public Faturas(string fatura, int comprador_id, int leilao_id)
+        public Faturas(string fatura, int compradorid, int leilaoid)
         {
             Fatura = fatura;
-            Comprador_Id = comprador_id;
-            Leilao_Id = leilao_id;
+            CompradorId = compradorid;
+            LeilaoId = leilaoid;
         }
     }
 }

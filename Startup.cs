@@ -1,7 +1,7 @@
-﻿using CardBid.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Blazored.LocalStorage;
+using CardBid.Data;
 using CardBid.DataAcessLibrary;
-using Blazored.LocalStorage;
+using Microsoft.EntityFrameworkCore;
 
 namespace CardBid
 {
@@ -43,6 +43,6 @@ namespace CardBid
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-        }   
+        }
     }
 }

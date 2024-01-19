@@ -1,5 +1,5 @@
-﻿using CardBid.Data.Models;
-using CardBid.Data;
+﻿using CardBid.Data;
+using CardBid.Data.Models;
 using CardBid.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +14,7 @@ namespace CardBid.DataAcessLibrary
             _db = db;
         }
 
-        public async Task<Utilizadores>AddUtilizador(Utilizadores utilizador)
+        public async Task<Utilizadores> AddUtilizador(Utilizadores utilizador)
         {
             try
             {
@@ -31,14 +31,15 @@ namespace CardBid.DataAcessLibrary
                 {
                     if (sqlException.Number == 2627)
                     {
-                        throw new UserRegisterException ("Email or NIF already exists!");
+                        throw new UserRegisterException("Email or NIF already exists!");
                     }
                 }
                 else
                 {
                     throw new UserRegisterException("An error occurred while trying to register the user.");
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new UserRegisterException(ex.Message);
             }

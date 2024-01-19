@@ -37,7 +37,7 @@
             Conta c = await ContaService.getConta(Username, Password);
 
             await LocalStorage.SetItemAsync("username", Username);
-            await LocalStorage.SetItemAsync("id", c.Utilizador_Id);
+            await LocalStorage.SetItemAsync("id", c.UtilizadorId);
 
             NavigationManager.NavigateTo("/");
         } catch (LoginException) {

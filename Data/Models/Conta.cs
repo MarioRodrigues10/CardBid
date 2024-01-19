@@ -4,7 +4,7 @@
     {
         public string NomeUtilizador { get; set; }
         public string PalavraPasse { get; set; }
-        public int Utilizador_Id { get; set; }
+        public int UtilizadorId { get; set; }
 
         public Conta() { }
 
@@ -12,7 +12,7 @@
         {
             NomeUtilizador = nomeUtilizador;
             PalavraPasse = palavraPasse;
-            Utilizador_Id = utilizador_Id;
+            UtilizadorId = utilizador_Id;
         }
 
         public Conta(string nomeUtilizador, string palavraPasse)
