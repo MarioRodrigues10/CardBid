@@ -1,6 +1,7 @@
 ﻿using CardBid.Data;
 using Microsoft.EntityFrameworkCore;
 using CardBid.DataAcessLibrary;
+using Blazored.LocalStorage;
 
 namespace CardBid
 {
@@ -10,6 +11,7 @@ namespace CardBid
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazoredLocalStorage();
 
             // Configure the DbContext
             services.AddDbContext<CardBidDbContext>(options =>

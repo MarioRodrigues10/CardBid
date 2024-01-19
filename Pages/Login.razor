@@ -1,6 +1,8 @@
 @using CardBid.Data
 @using CardBid.DataAcessLibrary
 @using Microsoft.EntityFrameworkCore
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 @inject CardBidDbContext DbContext
 @inject IContaData ContaService
@@ -34,6 +36,7 @@
 
         if (credentialsValid)
         {
+            await LocalStorage.SetItemAsync("username", Username);
             NavigationManager.NavigateTo("/");
         }
         else
