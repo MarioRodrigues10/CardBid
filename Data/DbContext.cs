@@ -59,11 +59,13 @@ namespace CardBid.Data
 
                 entity.Property(e => e.Telefone)
                     .IsRequired()
-                    .HasColumnName("Telefone");
+                    .HasColumnName("Telefone")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.NIF)
                     .IsRequired()
-                    .HasColumnName("NIF");
+                    .HasColumnName("NIF")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.Morada)
                     .IsRequired()

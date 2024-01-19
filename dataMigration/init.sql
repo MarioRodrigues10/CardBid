@@ -32,12 +32,12 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Utili
 BEGIN
     CREATE TABLE Utilizadores (
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        NIF INT NOT NULL UNIQUE,
+        NIF VARCHAR(10) NOT NULL UNIQUE,
         Email VARCHAR(45) NOT NULL UNIQUE,
         Nome VARCHAR(45) NOT NULL,
         DataDeNascimento DATE NOT NULL,
         Genero VARCHAR(15) NOT NULL,
-        Telefone INT NOT NULL,
+        Telefone Varchar(10) NOT NULL,
         Morada VARCHAR(100) NOT NULL
     );
 END;

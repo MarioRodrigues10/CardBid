@@ -32,7 +32,7 @@
         <label class="font-bold" for="address">Address:</label>
         <input type="text" placeholder="Address" @bind="Address" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="phoneNumber">Phone Number:</label>
-        <input type="tel" placeholder="Phone Number" @bind="PhoneNumber" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number" @bind="PhoneNumber" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="nif">NIF:</label>
         <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="NIF" @bind="NIF" class="border-black border-2 px-4 py-2 rounded">
         <button class="bg-blue-500 text-white px-4 py-2 rounded w-96" @onclick="RegisterUser">Register</button>
@@ -55,8 +55,8 @@ private string Username { get; set; }
     private DateTime Birthday { get; set; }
     private string Sex { get; set; }
     private string Address { get; set; }
-    private int PhoneNumber { get; set; }
-    private int NIF { get; set; }
+    private string PhoneNumber { get; set; }
+    private string NIF { get; set; }
 
     private bool IsPasswordValid => Password == ConfirmPassword;
     private string ErrorMessagePassword { get; set; }
@@ -72,12 +72,6 @@ private string Username { get; set; }
             return;
         }
 
-        if ((NIF < 100000000 && NIF > 999999999) || (PhoneNumber < 100000000 && PhoneNumber > 999999999))
-        {
-            ErrorMessageRegister = "Numbers Invalid!";
-            return;
-        }
-
         if (Birthday > DateTime.Now.AddYears(-18))
         {
             ErrorMessageRegister = "You must be 18 years old to register!";
@@ -85,9 +79,21 @@ private string Username { get; set; }
         } 
 
 
-        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Username))
+        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(PhoneNumber) || string.IsNullOrEmpty(NIF))
         {
             ErrorMessageRegister = "Please fill all the required fields!";
+            return;
+        }
+
+        if (NIF.Length != 9)
+        {
+            ErrorMessageRegister = "NIF must have 9 digits!";
+            return;
+        }
+
+        if (PhoneNumber.Length != 9)
+        {
+            ErrorMessageRegister = "Phone Number must have 9 digits!";
             return;
         }
 
