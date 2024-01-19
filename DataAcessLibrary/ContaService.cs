@@ -59,10 +59,18 @@ namespace CardBid.DataAcessLibrary
             return null;
         }
 
-        public async Task<bool> CheckCredentialsAsync(string username, string password)
+        public async Task<Conta> getConta(string username, string password)
         {
-            var user = await _db.Conta.FirstOrDefaultAsync(c => c.NomeUtilizador == username && c.PalavraPasse == password);
-            return user != null;
+            var user = await _db.Conta.FindAsync(username);
+            if (user == null)
+            {
+                throw new LoginException("User not found!");
+            }
+            if (user.PalavraPasse != password)
+            {
+                throw new LoginException("Wrong password!");
+            }
+            return user;
         }
     }
 }

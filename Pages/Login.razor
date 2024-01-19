@@ -1,5 +1,7 @@
 @using CardBid.Data
+@using CardBid.Data.Models
 @using CardBid.DataAcessLibrary
+@using CardBid.Exceptions
 @using Microsoft.EntityFrameworkCore
 @using Blazored.LocalStorage
 @inject ILocalStorageService LocalStorage
@@ -31,16 +33,14 @@
 
     private async Task LoginUser()
     {
-        // Check credentials against the database
-        bool credentialsValid = await ContaService.CheckCredentialsAsync(Username, Password);
+        try {
+            Conta c = await ContaService.getConta(Username, Password);
 
-        if (credentialsValid)
-        {
             await LocalStorage.SetItemAsync("username", Username);
+            await LocalStorage.SetItemAsync("id", c.Utilizador_Id);
+
             NavigationManager.NavigateTo("/");
-        }
-        else
-        {
+        } catch (LoginException) {
             message = "Invalid credentials";
         }
     }
