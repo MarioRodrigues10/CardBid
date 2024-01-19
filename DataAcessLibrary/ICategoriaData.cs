@@ -3,7 +3,7 @@ using CardBid.Data.Models;
 
 namespace CardBid.DataAcessLibrary
 {
-    public interface ICategoriaService
+    public interface ICategoriaData
     {
         public Task<Categorias> AddCategoria(Categorias categoria);
         public Task<List<Categorias>> GetCategorias();

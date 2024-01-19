@@ -3,7 +3,7 @@ using CardBid.Data.Models;
 
 namespace CardBid.DataAcessLibrary
 {
-    public class CategoriaService : ICategoriaService
+    public class CategoriaService : ICategoriaData
     {
         private readonly CardBidDbContext _db;
 
