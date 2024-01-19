@@ -42,6 +42,11 @@ namespace CardBid.DataAcessLibrary
             {
                 throw new UserRegisterException(ex.Message);
             }
+            finally
+            {
+                // Clear the DbContext state
+                _db.ChangeTracker.Clear();
+            }
             return null;
         }
     }
