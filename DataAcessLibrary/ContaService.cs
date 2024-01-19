@@ -31,11 +31,12 @@ namespace CardBid.DataAcessLibrary
                 {
                     if (sqlException.Number == 2627)
                     {
+                        _db.ChangeTracker.Clear();
                         var entityToRemove = await _db.Utilizadores.FindAsync(conta.Utilizador_Id);
 
                         if (entityToRemove != null)
                         {
-                            _db.Utilizadores.Remove(entityToRemove);
+                            _db.Utilizadores.Remove(entityToRemove); 
                             await _db.SaveChangesAsync();
                         }
 

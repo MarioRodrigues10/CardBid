@@ -2,7 +2,11 @@ USE master;
 GO
 
 PRINT 'Creating cardbid database...';
-CREATE DATABASE cardbid;
+IF NOT EXISTS (SELECT * FROM SYS.DATABASES WHERE name = 'cardbid')
+BEGIN 
+    CREATE DATABASE cardbid;
+END
+
 PRINT 'cardbid database created.';
 GO
 
@@ -36,7 +40,7 @@ BEGIN
         Email VARCHAR(45) NOT NULL UNIQUE,
         Nome VARCHAR(45) NOT NULL,
         DataDeNascimento DATE NOT NULL,
-        Genero VARCHAR(15) NOT NULL,
+        Genero CHAR(1) NOT NULL,
         Telefone Varchar(10) NOT NULL,
         Morada VARCHAR(100) NOT NULL
     );
