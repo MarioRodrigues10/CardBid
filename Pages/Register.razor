@@ -1,38 +1,143 @@
-@inject NavigationManager NavigationManager
 @page "/register"
+@using CardBid.Data
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@using CardBid.Exceptions
+@inject NavigationManager NavigationManager
+@inject CardBidDbContext DbContext
+@inject IUtilizadoresData UtilizadoresService
+@inject IContaData ContaService
+
 <div class="flex flex-col justify-center py-4 items-center h-fit min-h-screen">
     <h1 class="font-bold text-3xl py-2">Register</h1>
     <div class="flex flex-col space-y-4">
         <label class="font-bold" for="email">Email Address:</label>
-        <input type="text" placeholder="Email Address" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Email Address" @bind="Email" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="username">UserName:</label>
+        <input type="text" placeholder="Username" @bind="Username" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="password">Password:</label>
-        <input type="password" placeholder="Password" class="border-black border-2 px-4 py-2 rounded">
-        <label class="font-bold" for="password">Confirm Password:</label>
-        <input type="password" placeholder="Confirm Password" class="border-black border-2 px-4 py-2 rounded">
+        <input type="password" placeholder="Password" @bind="Password" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="confirmPassword">Confirm Password:</label>
+        <input type="password" placeholder="Confirm Password" @bind="ConfirmPassword" @ref="confirmPasswordInput" class="border-black border-2 px-4 py-2 rounded">
+        @if (!string.IsNullOrEmpty(ErrorMessagePassword))
+        {
+            <p class="text-red-500">@ErrorMessagePassword</p>
+        }
         <label class="font-bold" for="name">Name:</label>
-        <input type="text" placeholder="Name" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Name" @bind="Name" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="birthday">Birthday:</label>
-        <input type="date" placeholder="Birthday" class="border-black border-2 px-4 py-2 rounded">
+        <input type="date" @bind="Birthday" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="sex">Sex:</label>
-        <select class="border-black bg-white border-2 px-4 py-2 rounded">
+        <select @bind="Sex" class="border-black bg-white border-2 px-4 py-2 rounded">
             <option value="NotDisclosed">Not Disclosed</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
         <label class="font-bold" for="address">Address:</label>
-        <input type="text" placeholder="Address" class="border-black border-2 px-4 py-2 rounded">
-        <label class="font-bold" for="phone">Phone Number:</label>
-        <input type="tel" placeholder="Phone Number" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Address" @bind="Address" class="border-black border-2 px-4 py-2 rounded">
+        <label class="font-bold" for="phoneNumber">Phone Number:</label>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number" @bind="PhoneNumber" class="border-black border-2 px-4 py-2 rounded">
         <label class="font-bold" for="nif">NIF:</label>
-        <input type="number" placeholder="NIF" class="border-black border-2 px-4 py-2 rounded">
-        <button class="bg-blue-500 text-white px-4 py-2 rounded w-96">Register</button>
-        <a href="/login" class="button-like" @onclick="NavigateToLogin">Already have an account? Login</a>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="NIF" @bind="NIF" class="border-black border-2 px-4 py-2 rounded">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded w-96" @onclick="RegisterUser">Register</button>
+
+        @if (!string.IsNullOrEmpty(ErrorMessageRegister))
+        {
+            <p class="text-red-500">@ErrorMessageRegister</p>
+        }
+
+        <a href="/login" class="button-like">Already have an account? Login</a>
     </div>
 </div>
 
 @code {
-    private void NavigateToLogin()
+    private string Email { get; set; }
+    private string Username { get; set; }
+    private string Password { get; set; }
+    private string ConfirmPassword { get; set; }
+    private string Name { get; set; }
+    private DateTime Birthday { get; set; }
+    private string Sex { get; set; }
+    private string Address { get; set; }
+    private string PhoneNumber { get; set; }
+    private string NIF { get; set; }
+
+    private bool IsPasswordValid => Password == ConfirmPassword;
+    private string ErrorMessagePassword { get; set; }
+    private string ErrorMessageRegister { get; set; }
+    private ElementReference confirmPasswordInput;
+
+    private async Task RegisterUser()
+    {
+        ErrorMessagePassword = string.Empty;
+        ErrorMessageRegister = string.Empty;
+
+        if (Password != ConfirmPassword || Password == null)
         {
-            NavigationManager.NavigateTo("/login");
+            ErrorMessagePassword = "Passwords do not match!";
+            await confirmPasswordInput.FocusAsync();
+            return;
         }
+
+        if (Birthday > DateTime.Now.AddYears(-18))
+        {
+            ErrorMessageRegister = "You must be 18 years old to register!";
+            return;
+        } 
+
+
+        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(PhoneNumber) || string.IsNullOrEmpty(NIF))
+        {
+            ErrorMessageRegister = "Please fill all the required fields!";
+            return;
+        }
+
+        if (NIF.Length != 9)
+        {
+            ErrorMessageRegister = "NIF must have 9 digits!";
+            return;
+        }
+
+        if (PhoneNumber.Length != 9)
+        {
+            ErrorMessageRegister = "Phone Number must have 9 digits!";
+            return;
+        }
+
+        // Create a new Utilizadores instance with the provided information
+        var newUser = new Utilizadores
+            {
+                NIF = NIF,
+                Email = Email,
+                Nome = Name,
+                DataDeNascimento = Birthday,
+                Genero = Sex[0],
+                Telefone = PhoneNumber,
+                Morada = Address
+            };
+        try
+        {
+            var u = await UtilizadoresService.AddUtilizador(newUser);
+
+            var c = new Conta
+            {
+                NomeUtilizador = Username,
+                PalavraPasse = Password,
+                Utilizador_Id = u.Id
+            };
+
+            await ContaService.AddConta(c);
+        }
+        catch (UserRegisterException e)
+        {
+            ErrorMessageRegister = e.Message;
+            return;
+        }
+        NavigateToLogin();
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
 }

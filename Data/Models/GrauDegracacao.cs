@@ -1,5 +1,15 @@
-﻿public class GrauDegradacao
+﻿namespace CardBid.Data.Models
 {
-    public int GrauDegradacao { get; set; }
-    public string Designacao { get; set; }
+    public class GrauDegradacao
+    {
+        public int grauDegradacao { get; set; }
+        public string Designacao { get; set; }
+
+        public GrauDegradacao() { }
+        public GrauDegradacao(int grauDegradacao, string designacao)
+        {
+            this.grauDegradacao = grauDegradacao;
+            Designacao = designacao;
+        }
+    }
 }
