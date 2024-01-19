@@ -4,6 +4,7 @@ namespace CardBid.DataAcessLibrary
 {
     public interface IContaData
     {
-        Task<Conta> AddConta(Conta conta);
+        public Task<Conta> AddConta(Conta conta);
+        public Task<bool> CheckCredentialsAsync(string username, string password);
     }
 }

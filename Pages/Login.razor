@@ -1,7 +1,9 @@
 @using CardBid.Data
+@using CardBid.DataAcessLibrary
 @using Microsoft.EntityFrameworkCore
 @inject NavigationManager NavigationManager
 @inject CardBidDbContext DbContext
+@inject IContaData ContaService
 
 @page "/login"
 
@@ -28,7 +30,7 @@
     private async Task LoginUser()
     {
         // Check credentials against the database
-        bool credentialsValid = await CheckCredentialsAsync(Username, Password);
+        bool credentialsValid = await ContaService.CheckCredentialsAsync(Username, Password);
 
         if (credentialsValid)
         {
@@ -38,14 +40,6 @@
         {
             message = "Invalid credentials";
         }
-    }
-
-    private async Task<bool> CheckCredentialsAsync(string username, string password)
-    {
-        // verify if the user exists in the database
-        var user = await DbContext.Conta.FirstOrDefaultAsync(c => c.NomeUtilizador == username && c.PalavraPasse == password);
-
-        return user != null;
     }
 
     private void NavigateToRegister()

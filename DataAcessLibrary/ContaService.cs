@@ -57,5 +57,11 @@ namespace CardBid.DataAcessLibrary
             }
             return null;
         }
+
+        public async Task<bool> CheckCredentialsAsync(string username, string password)
+        {
+            var user = await _db.Conta.FirstOrDefaultAsync(c => c.NomeUtilizador == username && c.PalavraPasse == password);
+            return user != null;
+        }
     }
 }
