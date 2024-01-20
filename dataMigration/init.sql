@@ -146,3 +146,9 @@ BEGIN
       (9, 'Mint'),
       (10, 'Gem Mint');
 END
+
+IF NOT EXISTS (SELECT 1 FROM Conta)
+BEGIN
+    INSERT INTO Conta (NomeUtilizador, PalavraPasse, UtilizadorId)
+    VALUES ('admin', 'admin', null);
+END    
