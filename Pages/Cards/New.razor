@@ -9,17 +9,18 @@
 @inject IGrauDegradacaoData grauDegradacaoService
 @inject ILeiloesData leilaoService
 @inject ILocalStorageService LocalStorage
+@inject IFotosData fotoService
 
 <div class="flex flex-row justify-center space-x-12 py-4 items-center h-fit min-h-screen">
     <div>
     <h1 class="font-bold text-3xl py-2">List for Sale</h1>
     <div class="flex flex-col space-y-4">
         <label class="font-bold" for="title">Title:</label>
-        <input type="text" placeholder="Title" @bind="@Title" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Title" @bind="@Title" class="border-black border-2 px-4 py-2 rounded" >
         <label class="font-bold" for="name"1>Starting Price:</label>
-        <input type="number" @bind="@listingPrice" @oninput="updateBidFee" placeholder="" class="border-black border-2 px-4 py-2 rounded"/>
+        <input type="number" @bind="@listingPrice" @oninput="updateBidFee" placeholder="" class="border-black border-2 px-4 py-2 rounded" />
         <label class="font-bold" for="description">Description:</label>
-        <input type="text" placeholder="Description" @bind="Description" class="border-black border-2 px-4 py-2 rounded">
+        <input type="text" placeholder="Description" @bind="Description" class="border-black border-2 px-4 py-2 rounded" >
         <label class="font-bold" for="price">Degredation Level:</label>
         <select type="select" placeholder="Level" @bind="Level" class="border-black bg-white border-2 px-4 py-2 rounded">
             @foreach (var level in levels)
@@ -28,7 +29,7 @@
             }
         </select>
         <label class="font-bold" for="image">Final Date:</label>
-        <input type="datetime-local" placeholder="Final Date and Time" @bind="dateTime" class="border-black border-2 px-4 py-2 rounded">
+        <input type="datetime-local" placeholder="Final Date and Time" @bind="dateTime" class="border-black border-2 px-4 py-2 rounded" >
         <label class="font-bold" for="image">Collection:</label>
         <select type="select" placeholder="Collection" @bind="Collection" class="border-black bg-white border-2 px-4 py-2 rounded"> 
             @foreach (var collection in collections)
@@ -50,10 +51,15 @@
             <p>@(listingPrice - bidFee) €</p>
         </div>
         <button @onclick="RegisterAuction" class="bg-blue-500 text-white px-4 py-2 rounded w-96">Complete Listing</button>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="text-red-500">@ErrorMessage</p>
+        }
     </div>
 </div>
-<div class="bg-red h-full w-50">
-    <image src="https://via.placeholder.com/400" />
+<div class="bg-red h-full w-50" style="cursor: pointer">
+    <InputFile @ref="fileInput" OnChange="HandleFileSelected" />
+    <img src="@ImageSource" alt="Selected Image" style="max-width: 100%; max-height: 100%;" />
 </div>
 </div>
 
@@ -69,6 +75,16 @@
     private string Description;
     private string Level;
     private string Collection;
+    private string ErrorMessage;
+    private string ImageSource;
+    private InputFile fileInput;
+
+    private bool isValid => !string.IsNullOrEmpty(Title)
+        && !string.IsNullOrEmpty(Description)
+        && !string.IsNullOrEmpty(Level)
+        && !string.IsNullOrEmpty(Collection)
+        && listingPrice > 0
+        && dateTime >= DateTime.Now.AddHours(24);
 
     protected override void OnInitialized()
     {
@@ -88,6 +104,11 @@
 
     private async void RegisterAuction()
     {
+        if (!isValid)
+        {
+            ErrorMessage = "Please fill all the fields";
+            return;
+        }
         var vendedor = await LocalStorage.GetItemAsync<int>("id");
 
         var l = new Leiloes {
@@ -104,11 +125,36 @@
 
         await leilaoService.AddLeilao(l);
 
+        var f = new Fotos {
+            LeilaoId = l.Id,
+            Foto = ImageSource
+        };
+
+        await fotoService.AddFotos(f);
+
         NavigateToHome();
     }
 
     private void NavigateToHome()
     {
         NavigationManager.NavigateTo("/");
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        if (file != null)
+        {
+            var format = "image/png";
+            var imageFile = await file.RequestImageFileAsync(format, 100, 100);
+            var buffer = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(buffer);
+
+            var filename = $"{Guid.NewGuid()}.png";
+            var imagePath = $"Images/{filename}";
+            await File.WriteAllBytesAsync(imagePath, buffer);        
+            ImageSource = imagePath;
+        }
     }
 }
