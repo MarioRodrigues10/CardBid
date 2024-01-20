@@ -87,8 +87,8 @@ namespace CardBid.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.DataLimite).IsRequired().HasColumnName("DataLimite");
-                entity.Property(e => e.PrecoInicial).IsRequired().HasColumnName("PrecoInicial");
-                entity.Property(e => e.BidFee).IsRequired().HasColumnName("BidFee");
+                entity.Property(e => e.PrecoInicial).IsRequired().HasColumnName("PrecoInicial").HasColumnType("decimal(6,2)");
+                entity.Property(e => e.BidFee).IsRequired().HasColumnName("BidFee").HasColumnType("decimal(6,2)");
                 entity.Property(e => e.Estado).IsRequired().HasColumnName("Estado").HasMaxLength(11);
                 entity.Property(e => e.GrauDeDegradacao).IsRequired().HasColumnName("GrauDeDegradacao");
                 entity.Property(e => e.Descricao).IsRequired().HasColumnName("Descricao").HasMaxLength(200);
@@ -116,7 +116,7 @@ namespace CardBid.Data
             modelBuilder.Entity<Licitacoes>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Valor).IsRequired();
+                entity.Property(e => e.Valor).IsRequired().HasColumnType("decimal(6,2)");
                 entity.Property(e => e.LicitanteId).IsRequired();
                 entity.Property(e => e.LeilaoId).IsRequired();
                 entity.Property(e => e.Data).IsRequired();

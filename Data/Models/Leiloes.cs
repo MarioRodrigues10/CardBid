@@ -5,7 +5,7 @@ namespace CardBid.Data.Models
         public int Id { get; set; }
         public DateTime DataLimite { get; set; }
         public decimal PrecoInicial { get; set; }
-        public decimal  BidFee { get; set; }
+        public decimal BidFee { get; set; }
         public string Estado { get; set; }
         public int GrauDeDegradacao { get; set; }
         public string Descricao { get; set; }
