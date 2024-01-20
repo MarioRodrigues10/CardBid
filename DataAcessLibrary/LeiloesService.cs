@@ -28,5 +28,11 @@ namespace CardBid.DataAcessLibrary
             await _db.SaveChangesAsync();
             return leilao;
         }
+
+        public async Task<Leiloes> GetLeiloesPerCategory(string categoria)
+        {
+            var leiloes = await _db.Leiloes.Where(l => l.Categoria == categoria).ToListAsync();
+            return leiloes;
+        }
     }
 }

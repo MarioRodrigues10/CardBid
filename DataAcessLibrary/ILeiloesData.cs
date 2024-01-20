@@ -7,5 +7,7 @@ namespace CardBid.DataAcessLibrary
         public Task<List<Leiloes>> ListAll();
 
         public Task<Leiloes> AddLeilao(Leiloes leilao);
+
+        public Task<Leiloes> GetLeiloesPerCategory(string categoria);
     }
 }
