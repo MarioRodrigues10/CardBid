@@ -118,11 +118,13 @@
             Titulo = Title
         };
 
+        await leilaoService.AddLeilao(l);
+
         var f = new Fotos {
+            LeilaoId = l.Id,
             Foto = ImageSource
         };
 
-        await leilaoService.AddLeilao(l);
         await fotoService.AddFotos(f);
 
         NavigateToHome();
@@ -143,8 +145,11 @@
             var imageFile = await file.RequestImageFileAsync(format, 100, 100);
             var buffer = new byte[imageFile.Size];
             await imageFile.OpenReadStream().ReadAsync(buffer);
-        
-            ImageSource = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+
+            var filename = $"{Guid.NewGuid()}.png";
+            var imagePath = $"Images/{filename}";
+            await File.WriteAllBytesAsync(imagePath, buffer);        
+            ImageSource = imagePath;
         }
     }
 }
