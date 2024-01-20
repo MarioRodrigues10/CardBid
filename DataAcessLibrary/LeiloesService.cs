@@ -19,6 +19,13 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
+        public async Task<List<Leiloes>> ListAllAccepted()
+        {
+            var leiloes = await _db.Leiloes.Where(l => l.Estado == "Aceite").ToListAsync();
+            return leiloes;
+        }
+
+
         public async Task<Leiloes> AddLeilao(Leiloes leilao)
         {
             // Add the new user to the DbContext
@@ -50,6 +57,21 @@ namespace CardBid.DataAcessLibrary
             await _db.SaveChangesAsync();
             return leilao;
         }
-    
+
+        public async Task <Leiloes> acceptLeilao(int id)
+        {
+            var leilao = await _db.Leiloes.FindAsync(id);
+            leilao.Estado = "Aceite";
+            await _db.SaveChangesAsync();
+            return leilao;
+        }
+
+        public async Task<Leiloes> denyLeilao(int id)
+        {
+            var leilao = await _db.Leiloes.FindAsync(id);
+            leilao.Estado = "Recusado";
+            await _db.SaveChangesAsync();
+            return leilao;
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace CardBid
                 options.UseSqlServer("Server=localhost,1436;Database=cardbid;User Id=sa;Password=Password123;TrustServerCertificate=True");
             });
 
+            services.AddHostedService<LeiloesBackgroundService>();
             services.AddTransient<IUtilizadoresData, UtilizadoresService>();
             services.AddTransient<IContaData, ContaService>();
             services.AddTransient<ILeiloesData, LeiloesService>();

@@ -1,8 +1,10 @@
 @page "/card/new"
 @using CardBid.DataAcessLibrary
 @using CardBid.Data.Models
+@using CardBid.Data
 @using Blazored.LocalStorage
 @inject NavigationManager NavigationManager
+@inject CardBidDbContext dbcontext
 @inject ICategoriaData categoriaService
 @inject IGrauDegradacaoData grauDegradacaoService
 @inject ILeiloesData leilaoService
@@ -75,6 +77,9 @@
 
         levels = gds.Select(level => level.Designacao).ToArray();
         collections = list_collections.Select(collection => collection.categoria).ToArray();
+
+        Level = levels[0];
+        Collection = collections[0];
     }
 
     private void updateBidFee() {
@@ -88,7 +93,7 @@
         var l = new Leiloes {
             DataLimite = dateTime,
             PrecoInicial = listingPrice,
-            BidFee = bidFee,
+            BidFee = (decimal) bidFee,
             Estado = "Pendente",
             GrauDeDegradacao = gds.First(level => level.Designacao == Level).grauDegradacao,
             Descricao = Description,

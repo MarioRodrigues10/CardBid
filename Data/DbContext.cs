@@ -86,16 +86,16 @@ namespace CardBid.Data
             modelBuilder.Entity<Leiloes>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.DataLimite).IsRequired();
-                entity.Property(e => e.PrecoInicial).IsRequired();
-                entity.Property(e => e.BidFee).IsRequired();
-                entity.Property(e => e.Estado).IsRequired().HasMaxLength(11);
-                entity.Property(e => e.GrauDeDegradacao).IsRequired();
-                entity.Property(e => e.Descricao).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.VendedorId).IsRequired();
-                entity.Property(e => e.Categoria).IsRequired().HasMaxLength(20);
-                entity.Property(e => e.MaiorLicitacao).IsRequired();
-                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.DataLimite).IsRequired().HasColumnName("DataLimite");
+                entity.Property(e => e.PrecoInicial).IsRequired().HasColumnName("PrecoInicial");
+                entity.Property(e => e.BidFee).IsRequired().HasColumnName("BidFee");
+                entity.Property(e => e.Estado).IsRequired().HasColumnName("Estado").HasMaxLength(11);
+                entity.Property(e => e.GrauDeDegradacao).IsRequired().HasColumnName("GrauDeDegradacao");
+                entity.Property(e => e.Descricao).IsRequired().HasColumnName("Descricao").HasMaxLength(200);
+                entity.Property(e => e.VendedorId).IsRequired().HasColumnName("VendedorId");
+                entity.Property(e => e.Categoria).IsRequired().HasColumnName("Categoria").HasMaxLength(20);
+                entity.Property(e => e.MaiorLicitacao).HasColumnName("MaiorLicitacao");
+                entity.Property(e => e.Titulo).IsRequired().HasColumnName("Titulo").HasMaxLength(50);
 
             });
 
