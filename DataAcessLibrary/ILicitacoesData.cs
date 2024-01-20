@@ -2,7 +2,7 @@ using CardBid.Data.Models;
 
 namespace CardBid.DataAcessLibrary
 {
-    public interface ILeiloesData
+    public interface ILicitacoesData
     {
         public Task<List<Licitacoes>> ListAll();
 

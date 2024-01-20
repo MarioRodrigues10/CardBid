@@ -8,6 +8,10 @@ namespace CardBid.DataAcessLibrary
 
         public Task<Leiloes> AddLeilao(Leiloes leilao);
 
-        public Task<Leiloes> GetLeiloesPerCategory(string categoria);
+        public Task<List<Leiloes>> GetLeiloesPerCategory(string categoria);
+        
+        public Task<Leiloes> UpdateLicitacao(int id_leilao, int id_Licitacao);
+
+        public Task<Leiloes> IncreseTimeLimit(int id);
     }
 }

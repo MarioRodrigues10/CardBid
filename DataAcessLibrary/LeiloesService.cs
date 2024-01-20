@@ -29,10 +29,27 @@ namespace CardBid.DataAcessLibrary
             return leilao;
         }
 
-        public async Task<Leiloes> GetLeiloesPerCategory(string categoria)
+        public async Task<List<Leiloes>> GetLeiloesPerCategory(string categoria)
         {
             var leiloes = await _db.Leiloes.Where(l => l.Categoria == categoria).ToListAsync();
             return leiloes;
         }
+        
+        public async Task<Leiloes> UpdateLicitacao(int id_leilao, int id_Licitacao)
+        {
+            var leilao = await _db.Leiloes.FindAsync(id_leilao);
+            leilao.MaiorLicitacao = id_Licitacao;
+            await _db.SaveChangesAsync();
+            return leilao;
+        }
+
+        public async Task<Leiloes> IncreseTimeLimit(int id)
+        {
+            var leilao = await _db.Leiloes.FindAsync(id);
+            leilao.DataLimite = leilao.DataLimite.AddMinutes(5);
+            await _db.SaveChangesAsync();
+            return leilao;
+        }
+    
     }
 }

@@ -23,6 +23,7 @@ namespace CardBid.DataAcessLibrary
         {
             await _db.Licitacoes.AddAsync(licitacao);
             await _db.SaveChangesAsync();
+            _db.ChangeTracker.Clear();
             return licitacao;
         }
 
