@@ -63,6 +63,7 @@ BEGIN
         Id INT IDENTITY(1,1) PRIMARY KEY,
         DataLimite DATETIME NOT NULL,
         PrecoInicial DECIMAL(6, 2) NOT NULL,
+        BidFee DECIMAL(6, 2) NOT NULL,
         Estado VARCHAR(11) NOT NULL CHECK (Estado IN ('Finalizado', 'Recusado', 'Aceite', 'Pendente')),
         GrauDeDegradacao INT NOT NULL REFERENCES GrauDegradacao(GrauDegradacao),
         Descricao VARCHAR(200) NOT NULL,
@@ -119,7 +120,7 @@ IF NOT EXISTS (SELECT 1 FROM Categorias)
 BEGIN
     INSERT INTO Categorias (categoria)
     VALUES 
-      ('Pokémon'),
+      ('Pokï¿½mon'),
       ('Yu-Gi-Oh!'),
       ('Magic: The Gathering'),
       ('Dragon Ball Super'),

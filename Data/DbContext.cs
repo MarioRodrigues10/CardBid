@@ -88,6 +88,7 @@ namespace CardBid.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.DataLimite).IsRequired();
                 entity.Property(e => e.PrecoInicial).IsRequired();
+                entity.Property(e => e.BidFee).IsRequired();
                 entity.Property(e => e.Estado).IsRequired().HasMaxLength(11);
                 entity.Property(e => e.GrauDeDegradacao).IsRequired();
                 entity.Property(e => e.Descricao).IsRequired().HasMaxLength(200);
