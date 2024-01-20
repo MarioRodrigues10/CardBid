@@ -67,6 +67,14 @@
     private string ErrorMessageRegister { get; set; }
     private ElementReference confirmPasswordInput;
 
+    private bool camps => string.IsNullOrEmpty(Email)
+        || string.IsNullOrEmpty(Password) 
+        || string.IsNullOrEmpty(Name) 
+        || string.IsNullOrEmpty(Address) 
+        || string.IsNullOrEmpty(Username)
+        || string.IsNullOrEmpty(PhoneNumber)
+        || string.IsNullOrEmpty(NIF);
+
     private async Task RegisterUser()
     {
         ErrorMessagePassword = string.Empty;
@@ -85,8 +93,7 @@
             return;
         } 
 
-
-        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(PhoneNumber) || string.IsNullOrEmpty(NIF))
+        if (camps)
         {
             ErrorMessageRegister = "Please fill all the required fields!";
             return;
