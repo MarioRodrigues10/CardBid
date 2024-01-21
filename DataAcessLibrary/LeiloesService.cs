@@ -25,6 +25,11 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
+        public async Task<List<Leiloes>> ListAllPending()
+        {
+            var leiloes = await _db.Leiloes.Where(l => l.Estado == "Pendente").ToListAsync();
+            return leiloes;
+        }
 
         public async Task<Leiloes> AddLeilao(Leiloes leilao)
         {
@@ -73,5 +78,25 @@ namespace CardBid.DataAcessLibrary
             await _db.SaveChangesAsync();
             return leilao;
         }
+
+        public async Task<List<Leiloes>> ListAllbyVendedor(int id)
+        {
+            var leiloes = await _db.Leiloes.Where(l => l.VendedorId == id).ToListAsync();
+            return leiloes;
+        }
+        public async Task<List<Leiloes>> ListAllbyLimitDate(DateTime date)
+        {
+            var leiloes = await _db.Leiloes.Where(l => l.DataLimite <= date).ToListAsync();
+            return leiloes;
+        }
+
+        public async Task<List<Leiloes>> ListAllbyPrice(decimal price)
+        {
+            var leiloes = await _db.Leiloes.Where(l =>( 
+                l.MaiorLicitacao != null ? _db.Licitacoes.Where(li => li.Id == l.MaiorLicitacao).First().Valor : l.PrecoInicial ) <= price 
+                ).ToListAsync();
+            return leiloes;
+        }
+
     }
 }

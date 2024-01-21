@@ -32,6 +32,17 @@ namespace CardBid.DataAcessLibrary
             var licitacao = await _db.Licitacoes.FindAsync(id);
             return licitacao;
         }
-    }
 
+        public async Task<List<Licitacoes>> getLicitacoesPerLeilao(int id)
+        {
+            var licitacoes = await _db.Licitacoes.Where(l => l.LeilaoId == id).ToListAsync();
+            return licitacoes;
+        }
+
+        public async Task<List<Licitacoes>> getLicitacoesPerComprador(int id)
+        {
+            var licitacoes = await _db.Licitacoes.Where(l => l.LicitanteId == id).ToListAsync();
+            return licitacoes;
+        }
+    }
 }
