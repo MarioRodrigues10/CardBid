@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj": {}
+    "/home/mario/CardBid/CardBid.csproj": {}
   },
   "projects": {
-    "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj": {
+    "/home/mario/CardBid/CardBid.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj",
+        "projectUniqueName": "/home/mario/CardBid/CardBid.csproj",
         "projectName": "CardBid",
-        "projectPath": "/home/jojocoelho/Desktop/Projetos/CardBid/CardBid.csproj",
-        "packagesPath": "/home/jojocoelho/.nuget/packages/",
-        "outputPath": "/home/jojocoelho/Desktop/Projetos/CardBid/obj/",
+        "projectPath": "/home/mario/CardBid/CardBid.csproj",
+        "packagesPath": "/home/mario/.nuget/packages/",
+        "outputPath": "/home/mario/CardBid/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/jojocoelho/.nuget/NuGet/NuGet.Config"
+          "/home/mario/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -38,6 +38,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Blazored.LocalStorage": {
+              "target": "Package",
+              "version": "[4.4.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.1, )"
@@ -58,6 +62,16 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.15, 7.0.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[7.0.15, 7.0.15]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -66,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.115/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.101/RuntimeIdentifierGraph.json"
         }
       }
     }
