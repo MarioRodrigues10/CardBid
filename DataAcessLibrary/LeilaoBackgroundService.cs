@@ -1,4 +1,5 @@
 ﻿using CardBid.Data;
+using CardBid.Data.Models;
 
 public class LeiloesBackgroundService : BackgroundService
 {
@@ -25,7 +26,23 @@ public class LeiloesBackgroundService : BackgroundService
             var dbContext = scope.ServiceProvider.GetRequiredService<CardBidDbContext>();
             try
             {
-                dbContext.Leiloes.Where(a => a.Estado == "Aceite").ToList().ForEach(a => a.Estado = "Finalizado");
+                dbContext.Leiloes.Where(a => a.DataLimite <= DateTime.Now && a.Estado == "Aceite").ToList().ForEach(a => {
+                    if (a.MaiorLicitacao != null)
+                    {
+                        Licitacoes licitacao = dbContext.Licitacoes.Where(l => l.Id == a.MaiorLicitacao).First();
+
+                        Faturas faturas = new Faturas
+                        {
+                            CompradorId = licitacao.LicitanteId,
+                            LeilaoId = a.Id,
+                            Fatura = $"Leilão Nº{a.Id}: {a.Titulo}\n Licitação Nº{licitacao.Id}\n Valor = {licitacao.Valor}"
+                        };
+
+                        dbContext.Faturas.Add(faturas);
+                    }
+                               
+                    a.Estado = "Finalizado";
+                });
                 // Save changes to the database
                 await dbContext.SaveChangesAsync();
             }

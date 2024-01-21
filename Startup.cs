@@ -27,6 +27,7 @@ namespace CardBid
             services.AddTransient<IGrauDegradacaoData, GrauDegradacaoService>();
             services.AddTransient<ILicitacoesData, LicitacoesService>();
             services.AddTransient<IFotosData, FotosService>();
+            services.AddTransient<IFaturaData, FaturaService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
