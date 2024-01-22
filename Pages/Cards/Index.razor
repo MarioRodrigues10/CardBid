@@ -2,7 +2,10 @@
 @using CardBid.Data.Models
 @using CardBid.DataAcessLibrary
 @inject ILeiloesData LeiloesService
+@inject ILicitacoesData LicitacoesService
 @inject IFotosData FotosService
+@inject IContaData ContaService
+@inject NavigationManager NavigationManager
 @code {
     int currentPage = 1;
     int pageSize = 6; // Adjust the number of cards per page as needed
@@ -28,6 +31,30 @@
         int[] ids = leiloes.Select(l => l.Id).ToArray();
         fotos = FotosService.ListAllbyLeilao(ids);
        
+    }
+
+    private string ShowBid(int? bid)
+    {
+        if (bid == null)
+        {
+            return "No bids yet";
+        }
+        else
+        {
+            Licitacoes li = LicitacoesService.getLicitacao(bid.Value);
+            var s = li.Valor.ToString();
+            return s;
+        }
+    }
+
+    private void ShowCard(Leiloes leilao)
+    {
+        NavigationManager.NavigateTo($"/cards/buy/{leilao.Id}");
+    }
+
+    public string getUsername(int id)
+    {
+        return ContaService.getUsername(id);
     }
 }
 
@@ -75,17 +102,17 @@
                     height: auto;
                 }
             </style>
-            @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, pageSize))
+            @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
             {
                 <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
-                    <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" class="w-full"/>
+                    <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(leiloes[card-1])" class="w-full"/>
                     <div class="flex flex-col bg-white p-4">
-                        <span class="text-xl font-bold">Seller:@leiloes[card-1].VendedorId</span>
-                        <span class="text-xl font-bold">Card:@leiloes[card - 1].Titulo</span>
+                        <span class="text-xl font-bold">Seller: @getUsername(leiloes[card-1].VendedorId)</span>
+                        <span class="text-xl font-bold">Card: @leiloes[card - 1].Titulo</span>
                         <span class="text-xl font-bold">Auction Time Limit: @leiloes[card - 1].DataLimite.ToString("MM/dd - HH:mm")</span>
                     </div>
                     <div class="bg-white p-4">
-                        <span class="text-xl">Last Bid:@leiloes[card-1].MaiorLicitacao</span>
+                        <span class="text-xl">Last Bid: @ShowBid(leiloes[card-1].MaiorLicitacao)</span>
                     </div>
                 </div>
             }

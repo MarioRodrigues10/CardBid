@@ -27,9 +27,9 @@ namespace CardBid.DataAcessLibrary
             return licitacao;
         }
 
-        public async Task<Licitacoes> getLicitacao(int id)
+        public Licitacoes getLicitacao(int id)
         {
-            var licitacao = await _db.Licitacoes.FindAsync(id);
+            var licitacao = _db.Licitacoes.Find(id);
             return licitacao;
         }
 

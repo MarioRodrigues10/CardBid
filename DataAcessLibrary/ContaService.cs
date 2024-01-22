@@ -73,5 +73,11 @@ namespace CardBid.DataAcessLibrary
             }
             return user;
         }
+
+        public string getUsername(int id)
+        {
+            Conta conta = _db.Conta.Where(c => c.UtilizadorId == id).First();
+            return conta.NomeUtilizador;
+        }
     }
 }

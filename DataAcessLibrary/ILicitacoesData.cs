@@ -8,7 +8,7 @@ namespace CardBid.DataAcessLibrary
 
         public Task<Licitacoes> AddLicitacao(Licitacoes licitacao);
 
-        public Task<Licitacoes> getLicitacao(int id);
+        public Licitacoes getLicitacao(int id);
 
         public Task<List<Licitacoes>> getLicitacoesPerLeilao(int id);
 

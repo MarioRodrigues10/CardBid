@@ -6,5 +6,7 @@ namespace CardBid.DataAcessLibrary
     {
         public Task<Conta> AddConta(Conta conta);
         public Task<Conta> getConta(string username, string password);
+
+        public string getUsername(int id);
     }
 }

@@ -1,6 +1,15 @@
-@page "/cards/buy"
+@page "/cards/buy/{fileId:int}"
 
+@code {
+    [Parameter]
+    public int fileId { get; set; }
 
+    protected override void OnInitialized()
+    {
+        // Get the file from the database
+        // var file = await _fileService.GetFileAsync(fileId);
+    }
+}
 
 <div class="min-h-screen h-fit">
     <div class="h-96 w-full flex flex-col items-center justify-center py-8">
