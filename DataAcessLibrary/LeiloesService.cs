@@ -98,5 +98,11 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
+        public Leiloes getLeiloes(int id)
+        {
+            var leilao = _db.Leiloes.Find(id);
+            return leilao;
+        }
+
     }
 }

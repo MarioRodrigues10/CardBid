@@ -27,5 +27,7 @@ namespace CardBid.DataAcessLibrary
         public Task<List<Leiloes>> ListAllbyLimitDate(DateTime date);
 
         public Task<List<Leiloes>> ListAllbyPrice(decimal price);
+
+        public Leiloes getLeiloes(int id);
     }
 }

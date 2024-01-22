@@ -33,9 +33,9 @@ namespace CardBid.DataAcessLibrary
             return fotos;
         }
 
-        public async Task<Fotos> GetFotos(int id)
+        public Fotos GetFotos(int id)
         {
-            var fotos = await _db.Fotos.FindAsync(id);
+            var fotos = _db.Fotos.Where(f => f.LeilaoId == id).Single();
             return fotos;
         }
         

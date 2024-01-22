@@ -33,9 +33,9 @@ namespace CardBid.DataAcessLibrary
             return licitacao;
         }
 
-        public async Task<List<Licitacoes>> getLicitacoesPerLeilao(int id)
+        public List<Licitacoes> getLicitacoesPerLeilao(int id)
         {
-            var licitacoes = await _db.Licitacoes.Where(l => l.LeilaoId == id).ToListAsync();
+            var licitacoes = _db.Licitacoes.Where(l => l.LeilaoId == id).OrderByDescending(l => l.Data).ToList();
             return licitacoes;
         }
 

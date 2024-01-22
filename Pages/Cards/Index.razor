@@ -13,7 +13,7 @@
     List<Leiloes> leiloes = new List<Leiloes>();
     Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
 
-    int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
+    int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
     void ChangePage(int newPage)
     {
@@ -27,21 +27,19 @@
     {
         leiloes = LeiloesService.ListAllAccepted();
         totalCards = leiloes.Count;
-       
         int[] ids = leiloes.Select(l => l.Id).ToArray();
         fotos = FotosService.ListAllbyLeilao(ids);
-       
     }
 
-    private string ShowBid(int? bid)
+    private string ShowBid(Leiloes l)
     {
-        if (bid == null)
+        if (l.MaiorLicitacao == null)
         {
-            return "No bids yet";
+            return $"No bids yet. Price: {l.PrecoInicial}";
         }
         else
         {
-            Licitacoes li = LicitacoesService.getLicitacao(bid.Value);
+            Licitacoes li = LicitacoesService.getLicitacao(l.MaiorLicitacao.Value);
             var s = li.Valor.ToString();
             return s;
         }
@@ -112,7 +110,7 @@
                         <span class="text-xl font-bold">Auction Time Limit: @leiloes[card - 1].DataLimite.ToString("MM/dd - HH:mm")</span>
                     </div>
                     <div class="bg-white p-4">
-                        <span class="text-xl">Last Bid: @ShowBid(leiloes[card-1].MaiorLicitacao)</span>
+                        <span class="text-xl">Last Bid: @ShowBid(leiloes[card-1])€</span>
                     </div>
                 </div>
             }
