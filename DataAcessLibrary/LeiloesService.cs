@@ -19,9 +19,9 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
-        public async Task<List<Leiloes>> ListAllAccepted()
+        public List<Leiloes> ListAllAccepted()
         {
-            var leiloes = await _db.Leiloes.Where(l => l.Estado == "Aceite").ToListAsync();
+            var leiloes = _db.Leiloes.Where(l => l.Estado == "Aceite").ToList();
             return leiloes;
         }
 

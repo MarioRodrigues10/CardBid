@@ -1,9 +1,14 @@
 @page "/cards"
-
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@inject ILeiloesData LeiloesService
+@inject IFotosData FotosService
 @code {
     int currentPage = 1;
     int pageSize = 6; // Adjust the number of cards per page as needed
     int totalCards = 12; // Total number of cards
+    List<Leiloes> leiloes = new List<Leiloes>();
+    Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
 
     int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
 
@@ -13,6 +18,16 @@
         {
             currentPage = newPage;
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        leiloes = LeiloesService.ListAllAccepted();
+        totalCards = leiloes.Count;
+       
+        int[] ids = leiloes.Select(l => l.Id).ToArray();
+        fotos = FotosService.ListAllbyLeilao(ids);
+       
     }
 }
 
@@ -51,17 +66,26 @@
 
         <!-- Card Display Section with Pagination -->
         <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
+            <style>
+                img {
+                    display: block;
+                    max-width: 380px;
+                    max-height: 380px;
+                    width: auto;
+                    height: auto;
+                }
+            </style>
             @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, pageSize))
             {
-                <div class="ml-2 bg-gray-300 w-96 border-black border-2 @((card == 1) ? "border-t-2 mt-5" : "")">
-                    <img src="https://placehold.co/100x100" alt="Card Image" class="w-full" />
+                <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
+                    <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" class="w-full"/>
                     <div class="flex flex-col bg-white p-4">
-                        <span class="text-xl font-bold">Seller:</span>
-                        <span class="text-xl font-bold">Card:</span>
-                        <span class="text-xl font-bold">Auction Time:</span>
+                        <span class="text-xl font-bold">Seller:@leiloes[card-1].VendedorId</span>
+                        <span class="text-xl font-bold">Card:@leiloes[card - 1].Titulo</span>
+                        <span class="text-xl font-bold">Auction Time Limit: @leiloes[card - 1].DataLimite.ToString("MM/dd - HH:mm")</span>
                     </div>
                     <div class="bg-white p-4">
-                        <span class="text-xl">Last Bid: </span>
+                        <span class="text-xl">Last Bid:@leiloes[card-1].MaiorLicitacao</span>
                     </div>
                 </div>
             }

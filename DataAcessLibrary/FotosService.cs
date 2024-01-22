@@ -19,6 +19,12 @@ namespace CardBid.DataAcessLibrary
             return fotos;
         }
 
+        public Dictionary<int, Fotos> ListAllbyLeilao(int[] id)
+        {
+            var fotos = _db.Fotos.Where(f => id.Contains(f.LeilaoId)).ToDictionary(f => f.LeilaoId, f => f);
+            return fotos;
+        }
+
         public async Task<Fotos> AddFotos(Fotos fotos)
         {
             await _db.Fotos.AddAsync(fotos);

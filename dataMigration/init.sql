@@ -120,7 +120,7 @@ IF NOT EXISTS (SELECT 1 FROM Categorias)
 BEGIN
     INSERT INTO Categorias (categoria)
     VALUES 
-      ('Pok�mon'),
+      ('Pokemon'),
       ('Yu-Gi-Oh!'),
       ('Magic: The Gathering'),
       ('Dragon Ball Super'),

@@ -83,6 +83,7 @@
         && !string.IsNullOrEmpty(Description)
         && !string.IsNullOrEmpty(Level)
         && !string.IsNullOrEmpty(Collection)
+        && !string.IsNullOrEmpty(ImageSource)
         && listingPrice > 0
         && dateTime >= DateTime.Now.AddHours(24);
 
@@ -143,18 +144,17 @@
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-
+        string type = file.ContentType;
         if (file != null)
         {
-            var format = "image/png";
-            var imageFile = await file.RequestImageFileAsync(format, 100, 100);
+            var imageFile = await file.RequestImageFileAsync(type, 100, 100);
             var buffer = new byte[imageFile.Size];
             await imageFile.OpenReadStream().ReadAsync(buffer);
+            var filename = $"{Guid.NewGuid()}.{type.Substring(6)}";
+            var imagePath = $"wwwroot/Images/{filename}";
+            await File.WriteAllBytesAsync(imagePath, buffer);
 
-            var filename = $"{Guid.NewGuid()}.png";
-            var imagePath = $"Images/{filename}";
-            await File.WriteAllBytesAsync(imagePath, buffer);        
-            ImageSource = imagePath;
+            ImageSource = imagePath.Substring(8);
         }
     }
 }
