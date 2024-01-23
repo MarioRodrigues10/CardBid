@@ -80,7 +80,7 @@ namespace CardBid.Data
             {
                 entity.HasKey(e => e.NomeUtilizador);
                 entity.Property(e => e.PalavraPasse).IsRequired();
-                entity.Property(e => e.UtilizadorId).IsRequired();
+                entity.Property(e => e.UtilizadorId);
             });
 
             modelBuilder.Entity<Leiloes>(entity =>
