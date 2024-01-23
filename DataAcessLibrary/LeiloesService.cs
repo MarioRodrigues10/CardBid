@@ -19,9 +19,9 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
-        public List<Leiloes> ListAllAccepted()
+        public Dictionary<int,Leiloes> ListAllAccepted()
         {
-            var leiloes = _db.Leiloes.Where(l => l.Estado == "Aceite").ToList();
+            var leiloes = _db.Leiloes.Where(l => l.Estado == "Aceite").ToDictionary(l => l.Id, l => l);
             return leiloes;
         }
 

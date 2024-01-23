@@ -6,7 +6,7 @@ namespace CardBid.DataAcessLibrary
     {
         public Task<List<Leiloes>> ListAll();
 
-        public List<Leiloes> ListAllAccepted();
+        public Dictionary<int,Leiloes> ListAllAccepted();
 
         public Task<List<Leiloes>> ListAllPending();
 

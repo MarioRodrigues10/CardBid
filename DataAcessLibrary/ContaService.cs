@@ -79,5 +79,11 @@ namespace CardBid.DataAcessLibrary
             Conta conta = _db.Conta.Where(c => c.UtilizadorId == id).First();
             return conta.NomeUtilizador;
         }
+
+        public Dictionary<int, string> getAllUsernames(List<int> ids)
+        {
+            var utilizadores = _db.Conta.Where(c => ids.Contains(c.UtilizadorId)).ToDictionary(c => c.UtilizadorId,c => c.NomeUtilizador);
+            return utilizadores;
+        }
     }
 }

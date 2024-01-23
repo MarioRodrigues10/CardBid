@@ -5,15 +5,36 @@
 @inject ILicitacoesData LicitacoesService
 @inject IFotosData FotosService
 @inject IContaData ContaService
+@inject ICategoriaData CategoriaService
+@inject IGrauDegradacaoData GrauDegradacaoService
 @inject NavigationManager NavigationManager
-@code {
-    int currentPage = 1;
-    int pageSize = 6; // Adjust the number of cards per page as needed
-    int totalCards = 12; // Total number of cards
-    List<Leiloes> leiloes = new List<Leiloes>();
-    Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
 
-    int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
+@code {
+    private int currentPage = 1;
+    private int pageSize = 6; // Adjust the number of cards per page as needed
+    private int totalCards => leiloes.Count; // Total number of cards
+
+    private string FilterCategoria = "";
+    private string FilterUser = "";
+    private int FilterPrecoMin = 0;
+    private int FilterGrauDegradacao = 0;
+    private DateTime? FilterDate = null;
+
+    private Dictionary<int,Leiloes> Allleiloes = new Dictionary<int,Leiloes>();
+    private List<Leiloes> leiloes => Allleiloes.Values.Where(l =>
+        (FilterCategoria == "" || l.Categoria == FilterCategoria) &&
+        (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
+        l.PrecoInicial >= FilterPrecoMin &&
+        (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
+        (FilterDate == null || l.DataLimite <= FilterDate)
+    ).ToList();
+
+    private Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
+    private Dictionary<int, string> usernames = new Dictionary<int, string>();
+    private List<Categorias> collections = new List<Categorias>();
+    private List<GrauDegradacao> levels = new List<GrauDegradacao>();
+
+    private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
     void ChangePage(int newPage)
     {
@@ -25,10 +46,12 @@
 
     protected override void OnInitialized()
     {
-        leiloes = LeiloesService.ListAllAccepted();
-        totalCards = leiloes.Count;
-        int[] ids = leiloes.Select(l => l.Id).ToArray();
+        Allleiloes = LeiloesService.ListAllAccepted();
+        int[] ids = Allleiloes.Keys.ToArray();
         fotos = FotosService.ListAllbyLeilao(ids);
+        usernames = ContaService.getAllUsernames(Allleiloes.Select(l => l.Value.VendedorId).ToList());
+        collections = CategoriaService.GetCategorias();
+        levels = GrauDegradacaoService.GetGrausDegradacao();
     }
 
     private string ShowBid(Leiloes l)
@@ -48,11 +71,6 @@
     private void ShowCard(Leiloes leilao)
     {
         NavigationManager.NavigateTo($"/cards/buy/{leilao.Id}");
-    }
-
-    public string getUsername(int id)
-    {
-        return ContaService.getUsername(id);
     }
 }
 
@@ -78,15 +96,44 @@
         <!-- Filters Sidebar -->
         <div class="bg-gray-200 h-fit w-1/3 p-4">
             <h1 class="font-bold text-3xl mb-2">Filters</h1>
-            @foreach (var filter in new[] { "Owner", "Price", "Collection", "Degredation", "Final Date" })
-            {
-                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2">
-                    <option>@filter</option>
-                    <option>João</option>
-                    <option>Pedro</option>
-                    <option>Joana</option>
-                </select>
-            }
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterUser">
+                <option value="">Owner</option>
+                @foreach(var user in usernames.Values)
+                {
+                    <option>@user</option>
+                }
+            </select>
+            
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterCategoria">
+                <option value="">Collection</option>
+                @foreach(var collection in collections)
+                {
+                    <option>@collection.categoria</option>
+                }
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterGrauDegradacao">
+                <option value=0>Degradation</option>
+                @foreach (var level in levels)
+                {
+                    <option value="@level.grauDegradacao">@level.Designacao</option>
+                }
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterPrecoMin">
+                <option value=0>Price</option>
+                <option>Price</option>
+                <option>João</option>
+                <option>Pedro</option>
+                <option>Joana</option>
+            </select>
+            
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
+                <option>Final Date</option>
+                <option>João</option>
+                <option>Pedro</option>
+                <option>Joana</option>
+            </select>
         </div>
 
         <!-- Card Display Section with Pagination -->
@@ -105,7 +152,7 @@
                 <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
                     <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(leiloes[card-1])" class="w-full"/>
                     <div class="flex flex-col bg-white p-4">
-                        <span class="text-xl font-bold">Seller: @getUsername(leiloes[card-1].VendedorId)</span>
+                        <span class="text-xl font-bold">Seller: @usernames[leiloes[card-1].VendedorId]</span>
                         <span class="text-xl font-bold">Card: @leiloes[card - 1].Titulo</span>
                         <span class="text-xl font-bold">Auction Time Limit: @leiloes[card - 1].DataLimite.ToString("MM/dd - HH:mm")</span>
                     </div>
