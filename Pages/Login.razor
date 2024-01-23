@@ -21,7 +21,7 @@
         {
             <p class="text-red-500">@message</p>
         }
-        <a href="">Forgot Password?</a>
+        <a href="/forgotpassword" class="button-like" @onclick="NavigateToForgotPassword">Forgot Password?</a>
         <a href="/register" class="button-like" @onclick="NavigateToRegister">Don't have an account? Signup</a>
     </div>
 </div>
@@ -48,5 +48,10 @@
     private void NavigateToRegister()
     {
         NavigationManager.NavigateTo("/register");
+    }
+
+    private void NavigateToForgotPassword()
+    {
+        NavigationManager.NavigateTo("/forgotpassword");
     }
 }
