@@ -26,8 +26,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvNDA0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/mario/CardBid/Pages/Cards/AdminIndex.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMvQWRtaW5JbmRleC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/mario/CardBid/Pages/Cards/Buy.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMvQnV5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mario/CardBid/Pages/Cards/ConfirmAuction.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMvQ29uZmlybUF1Y3Rpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/mario/CardBid/Pages/Cards/Index.razor]

@@ -1,0 +1,76 @@
+@page "/admin/cards"
+
+@code {
+    int currentPage = 1;
+    int pageSize = 8; // Adjust the number of cards per page as needed
+    int totalCards = 12; // Total number of cards
+    int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
+
+    void ChangePage(int newPage)
+    {
+        if (newPage >= 1 && newPage <= TotalPages)
+        {
+            currentPage = newPage;
+        }
+    }
+}
+
+<div class="min-h-screen h-full flex flex-col">
+    <!-- Header Section -->
+    <div class="flex flex-row h-full border-black border-y-2 bg-gray-200 items-center justify-between px-4 py-6 mt-5">
+        <div class="flex space-x-16 items-center">
+            <div class="flex items-center space-x-2">
+                <span>🟢</span>
+                <span class="text-2xl font-bold">Live</span>
+            </div>
+            <span class="text-xl">Showing: @totalCards results</span>
+        </div>
+        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64">
+            <option>Price Low to High</option>
+            <option>Price High to Low</option>
+            <option>Level</option>
+        </select>
+    </div>
+
+    <!-- Filters and Cards Section -->
+    <div class="flex flex-row">
+        <!-- Filters Sidebar -->
+        <div class="bg-gray-200 h-fit w-min">
+            <h1 class="font-bold text-3xl px-2 py-2">Filters</h1>
+            @foreach (var filter in new[] { "Owner", "Price", "Collection", "Degredation", "Final Date" })
+            {
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2">
+                    <option>@filter</option>
+                    <option>João</option>
+                    <option>Pedro</option>
+                    <option>Joana</option>
+                </select>
+            }
+        </div>
+
+        <!-- Card Display Section with Pagination -->
+        <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
+            @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, pageSize))
+            {
+                <div class="ml-2 bg-white w-96 border-black border-2 @((card == 1) ? "border-t-2 mt-5" : "")">
+                    <img src="https://placehold.co/100x100" alt="Card Image" class="w-full" />
+                    <div class="flex flex-col bg-white p-4">
+                        <span class="text-xl font-bold">Seller:</span>
+                        <span class="text-xl font-bold">Card:</span>
+                        <span class="text-xl font-bold">Auction Time:</span>
+                    </div>
+                    <div class="bg-white p-4">
+                        <span class="text-xl">Last Bid: </span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-center items-center my-4">
+        <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage - 1)">Previous</button>
+        <span class="mx-4">Page @currentPage of @TotalPages</span>
+        <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage + 1)">Next</button>
+    </div>
+</div>
