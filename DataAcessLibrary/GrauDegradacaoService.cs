@@ -1,6 +1,5 @@
 using CardBid.Data;
 using CardBid.Data.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CardBid.DataAcessLibrary
 {

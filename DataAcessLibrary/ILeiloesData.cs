@@ -6,14 +6,14 @@ namespace CardBid.DataAcessLibrary
     {
         public Task<List<Leiloes>> ListAll();
 
-        public Dictionary<int,Leiloes> ListAllAccepted();
+        public Dictionary<int, Leiloes> ListAllAccepted();
 
-        public Task<List<Leiloes>> ListAllPending();
+        public Dictionary<int, Leiloes> ListAllPending();
 
         public Task<Leiloes> AddLeilao(Leiloes leilao);
 
         public Task<List<Leiloes>> GetLeiloesPerCategory(string categoria);
-        
+
         public Task<Leiloes> UpdateLicitacao(int id_leilao, int id_Licitacao);
 
         public Task<Leiloes> IncreseTimeLimit(int id);

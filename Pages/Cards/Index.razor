@@ -16,20 +16,38 @@
 
     private string FilterCategoria = "";
     private string FilterUser = "";
-    private (int,int) FilterPreco = (0,0);
+    private (int, int) FilterPreco = (0, 0);
     private int FilterGrauDegradacao = 0;
     private DateTime? FilterDate = null;
+    private string FilterOrder = "PriceLowToHigh";
 
-    private Dictionary<int,Leiloes> Allleiloes = new Dictionary<int,Leiloes>();
+    private Dictionary<int, Leiloes> Allleiloes = new Dictionary<int, Leiloes>();
     private Dictionary<int, decimal> currentBids = new Dictionary<int, decimal>();
 
-    private List<Leiloes> leiloes => Allleiloes.Values.Where(l =>
-        (FilterCategoria == "" || l.Categoria == FilterCategoria) &&
-        (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
-        (FilterPreco == (0,0) || (FilterPreco.Item1 < currentBids[l.Id] && FilterPreco.Item2 > currentBids[l.Id])) &&
-        (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
-        (FilterDate == null || l.DataLimite <= FilterDate)
-    ).ToList();
+    private List<Leiloes> leiloes
+    {
+        get 
+        {    
+            var filteredLeiloes = Allleiloes.Values.Where(l =>
+                        (FilterCategoria == "" || l.Categoria == FilterCategoria) &&
+                        (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
+                        (FilterPreco == (0,0) || (FilterPreco.Item1<currentBids[l.Id] && FilterPreco.Item2> currentBids[l.Id])) &&
+                        (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
+                        (FilterDate == null || l.DataLimite <= FilterDate)
+                        ).OrderBy(l => currentBids[l.Id]).ToList();
+            switch(FilterOrder)
+            {
+                case "PriceLowToHigh":
+                    return filteredLeiloes.OrderBy(l => currentBids[l.Id]).ToList();
+                case "PriceHighToLow":
+                    return filteredLeiloes.OrderByDescending(l => currentBids[l.Id]).ToList();
+                case "Level":
+                    return filteredLeiloes.OrderBy(l => l.GrauDeDegradacao).ToList();
+                default:
+                    return filteredLeiloes;
+            }
+        }
+    }
 
     private Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
     private Dictionary<int, string> usernames = new Dictionary<int, string>();
@@ -75,26 +93,26 @@
 
     private void UpdateFilterPreco(ChangeEventArgs e)
     {
-        switch (e.Value)
-        {
-            case "1":
-                FilterPreco = (0, 50);
-                break;
-            case "2":
-                FilterPreco = (50, 100);
-                break;
-            case "3":
-                FilterPreco = (100, 250);
-                break;
-            case "4":
-                FilterPreco = (250, 500);
-                break;
-            case "5":
-                FilterPreco = (500, 100000);
-                break;
-            default:
-                FilterPreco = (0, 0);
-                break;
+    switch (e.Value)
+    {
+        case "1":
+            FilterPreco = (0, 50);
+            break;
+        case "2":
+            FilterPreco = (50, 100);
+            break;
+        case "3":
+            FilterPreco = (100, 250);
+            break;
+        case "4":
+            FilterPreco = (250, 500);
+            break;
+        case "5":
+            FilterPreco = (500, 100000);
+            break;
+        default:
+            FilterPreco = (0, 0);
+            break;
         }
     }
 }
@@ -109,10 +127,10 @@
             </div>
             <span class="text-xl">Showing: @totalCards results</span>
         </div>
-        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64">
-            <option>Price Low to High</option>
-            <option>Price High to Low</option>
-            <option>Level</option>
+        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64" @bind="FilterOrder">
+            <option value="PriceLowToHigh">Price Low to High</option>
+            <option value="PriceHighToLow">Price High to Low</option>
+            <option value="Level">Level</option>
         </select>
     </div>
 
@@ -123,15 +141,15 @@
             <h1 class="font-bold text-3xl mb-2">Filters</h1>
             <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterUser">
                 <option value="">Owner</option>
-                @foreach(var user in usernames.Values)
+                @foreach (var user in usernames.Values)
                 {
                     <option>@user</option>
                 }
             </select>
-            
+
             <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterCategoria">
                 <option value="">Collection</option>
-                @foreach(var collection in collections)
+                @foreach (var collection in collections)
                 {
                     <option>@collection.categoria</option>
                 }
@@ -153,7 +171,7 @@
                 <option value="4">250€ - 500€</option>
                 <option value="5">500€ +</option>
             </select>
-            
+
             <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
                 <option value="">Final Date</option>
                 <option value="@DateTime.Now.AddDays(1)">Within a Day</option>
@@ -166,11 +184,11 @@
         <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
             <style>
                 img {
-                    display: block;
-                    max-width: 380px;
-                    max-height: 380px;
-                    width: auto;
-                    height: auto;
+                display: block;
+                max-width: 380px;
+                max-height: 380px;
+                width: auto;
+                height: auto;
                 }
             </style>
             @{

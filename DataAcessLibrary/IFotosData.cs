@@ -6,7 +6,7 @@ namespace CardBid.DataAcessLibrary
     {
         public Task<List<Fotos>> ListAll();
 
-        public Dictionary<int,Fotos> ListAllbyLeilao(int[] id);
+        public Dictionary<int, Fotos> ListAllbyLeilao(int[] id);
         public Task<Fotos> AddFotos(Fotos fotos);
 
         public Fotos GetFotos(int id);

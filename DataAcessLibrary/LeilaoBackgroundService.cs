@@ -26,7 +26,8 @@ public class LeiloesBackgroundService : BackgroundService
             var dbContext = scope.ServiceProvider.GetRequiredService<CardBidDbContext>();
             try
             {
-                dbContext.Leiloes.Where(a => a.DataLimite <= DateTime.Now && a.Estado == "Aceite").ToList().ForEach(a => {
+                dbContext.Leiloes.Where(a => a.DataLimite <= DateTime.Now && a.Estado == "Aceite").ToList().ForEach(a =>
+                {
                     if (a.MaiorLicitacao != null)
                     {
                         Licitacoes licitacao = dbContext.Licitacoes.Where(l => l.Id == a.MaiorLicitacao).First();
@@ -40,7 +41,7 @@ public class LeiloesBackgroundService : BackgroundService
 
                         dbContext.Faturas.Add(faturas);
                     }
-                               
+
                     a.Estado = "Finalizado";
                 });
                 // Save changes to the database

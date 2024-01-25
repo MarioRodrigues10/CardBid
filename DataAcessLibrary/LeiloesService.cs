@@ -19,15 +19,15 @@ namespace CardBid.DataAcessLibrary
             return leiloes;
         }
 
-        public Dictionary<int,Leiloes> ListAllAccepted()
+        public Dictionary<int, Leiloes> ListAllAccepted()
         {
             var leiloes = _db.Leiloes.Where(l => l.Estado == "Aceite").ToDictionary(l => l.Id, l => l);
             return leiloes;
         }
 
-        public async Task<List<Leiloes>> ListAllPending()
+        public Dictionary<int, Leiloes> ListAllPending()
         {
-            var leiloes = await _db.Leiloes.Where(l => l.Estado == "Pendente").ToListAsync();
+            var leiloes = _db.Leiloes.Where(l => l.Estado == "Pendente").ToDictionary(l => l.Id, l => l);
             return leiloes;
         }
 
@@ -46,7 +46,7 @@ namespace CardBid.DataAcessLibrary
             var leiloes = await _db.Leiloes.Where(l => l.Categoria == categoria).ToListAsync();
             return leiloes;
         }
-        
+
         public async Task<Leiloes> UpdateLicitacao(int id_leilao, int id_Licitacao)
         {
             var leilao = await _db.Leiloes.FindAsync(id_leilao);
@@ -63,7 +63,7 @@ namespace CardBid.DataAcessLibrary
             return leilao;
         }
 
-        public async Task <Leiloes> acceptLeilao(int id)
+        public async Task<Leiloes> acceptLeilao(int id)
         {
             var leilao = await _db.Leiloes.FindAsync(id);
             leilao.Estado = "Aceite";
@@ -92,8 +92,8 @@ namespace CardBid.DataAcessLibrary
 
         public async Task<List<Leiloes>> ListAllbyPrice(decimal price)
         {
-            var leiloes = await _db.Leiloes.Where(l =>( 
-                l.MaiorLicitacao != null ? _db.Licitacoes.Where(li => li.Id == l.MaiorLicitacao).First().Valor : l.PrecoInicial ) <= price 
+            var leiloes = await _db.Leiloes.Where(l => (
+                l.MaiorLicitacao != null ? _db.Licitacoes.Where(li => li.Id == l.MaiorLicitacao).First().Valor : l.PrecoInicial) <= price
                 ).ToListAsync();
             return leiloes;
         }

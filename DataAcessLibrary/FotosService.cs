@@ -1,5 +1,5 @@
-using CardBid.Data.Models;
 using CardBid.Data;
+using CardBid.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CardBid.DataAcessLibrary
@@ -38,6 +38,6 @@ namespace CardBid.DataAcessLibrary
             var fotos = _db.Fotos.Where(f => f.LeilaoId == id).Single();
             return fotos;
         }
-        
+
     }
 }
