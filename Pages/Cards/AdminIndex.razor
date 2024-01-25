@@ -1,16 +1,105 @@
 @page "/admin/cards"
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@inject ILeiloesData LeiloesService
+@inject ILicitacoesData LicitacoesService
+@inject IFotosData FotosService
+@inject IContaData ContaService
+@inject ICategoriaData CategoriaService
+@inject IGrauDegradacaoData GrauDegradacaoService
+@inject NavigationManager NavigationManager
 
 @code {
-    int currentPage = 1;
-    int pageSize = 8; // Adjust the number of cards per page as needed
-    int totalCards = 12; // Total number of cards
-    int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
+    private int currentPage = 1;
+    private int pageSize = 6; // Adjust the number of cards per page as needed
+    private int totalCards => leiloes.Count; // Total number of cards
+
+    private string FilterCategoria = "";
+    private string FilterUser = "";
+    private (int, int) FilterPreco = (0, 0);
+    private int FilterGrauDegradacao = 0;
+    private DateTime? FilterDate = null;
+    private string FilterOrder = "PriceLowToHigh";
+
+    private Dictionary<int, Leiloes> Allleiloes = new Dictionary<int, Leiloes>();
+
+    private List<Leiloes> leiloes
+    {
+        get
+        {
+            var filteredLeiloes = Allleiloes.Values.Where(l =>
+                        (FilterCategoria == "" || l.Categoria == FilterCategoria) &&
+                        (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
+                        (FilterPreco == (0, 0) || (FilterPreco.Item1 < l.PrecoInicial && FilterPreco.Item2 > l.PrecoInicial)) &&
+                        (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
+                        (FilterDate == null || l.DataLimite <= FilterDate)
+                        ).OrderBy(l => l.PrecoInicial).ToList();
+            switch (FilterOrder)
+            {
+                case "PriceLowToHigh":
+                    return filteredLeiloes.OrderBy(l => l.PrecoInicial).ToList();
+                case "PriceHighToLow":
+                    return filteredLeiloes.OrderByDescending(l => l.PrecoInicial).ToList();
+                case "Level":
+                    return filteredLeiloes.OrderBy(l => l.GrauDeDegradacao).ToList();
+                default:
+                    return filteredLeiloes;
+            }
+        }
+    }
+
+    private Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
+    private Dictionary<int, string> usernames = new Dictionary<int, string>();
+    private List<Categorias> collections = new List<Categorias>();
+    private List<GrauDegradacao> levels = new List<GrauDegradacao>();
+
+    private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
     void ChangePage(int newPage)
     {
         if (newPage >= 1 && newPage <= TotalPages)
         {
             currentPage = newPage;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Allleiloes = LeiloesService.ListAllPending();
+        int[] ids = Allleiloes.Keys.ToArray();
+        fotos = FotosService.ListAllbyLeilao(ids);
+        usernames = ContaService.getAllUsernames(Allleiloes.Select(l => l.Value.VendedorId).ToList());
+        collections = CategoriaService.GetCategorias();
+        levels = GrauDegradacaoService.GetGrausDegradacao();
+    }
+
+    private void ShowCard(Leiloes leilao)
+    {
+        NavigationManager.NavigateTo($"/auction/confirm/{leilao.Id}");
+    }
+
+    private void UpdateFilterPreco(ChangeEventArgs e)
+    {
+        switch (e.Value)
+        {
+            case "1":
+                FilterPreco = (0, 50);
+                break;
+            case "2":
+                FilterPreco = (50, 100);
+                break;
+            case "3":
+                FilterPreco = (100, 250);
+                break;
+            case "4":
+                FilterPreco = (250, 500);
+                break;
+            case "5":
+                FilterPreco = (500, 100000);
+                break;
+            default:
+                FilterPreco = (0, 0);
+                break;
         }
     }
 }
@@ -25,44 +114,88 @@
             </div>
             <span class="text-xl">Showing: @totalCards results</span>
         </div>
-        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64">
-            <option>Price Low to High</option>
-            <option>Price High to Low</option>
-            <option>Level</option>
+        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64" @bind="FilterOrder">
+            <option value="PriceLowToHigh">Price Low to High</option>
+            <option value="PriceHighToLow">Price High to Low</option>
+            <option value="Level">Level</option>
         </select>
     </div>
 
     <!-- Filters and Cards Section -->
     <div class="flex flex-row">
         <!-- Filters Sidebar -->
-        <div class="bg-gray-200 h-fit w-min">
-            <h1 class="font-bold text-3xl px-2 py-2">Filters</h1>
-            @foreach (var filter in new[] { "Owner", "Price", "Collection", "Degredation", "Final Date" })
-            {
-                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2">
-                    <option>@filter</option>
-                    <option>João</option>
-                    <option>Pedro</option>
-                    <option>Joana</option>
-                </select>
-            }
+        <div class="bg-gray-200 h-fit w-1/3 p-4">
+            <h1 class="font-bold text-3xl mb-2">Filters</h1>
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterUser">
+                <option value="">Owner</option>
+                @foreach (var user in usernames.Values)
+                {
+                    <option>@user</option>
+                }
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterCategoria">
+                <option value="">Collection</option>
+                @foreach (var collection in collections)
+                {
+                    <option>@collection.categoria</option>
+                }
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterGrauDegradacao">
+                <option value=0>Degradation</option>
+                @foreach (var level in levels)
+                {
+                    <option value="@level.grauDegradacao">@level.Designacao</option>
+                }
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @onchange="UpdateFilterPreco">
+                <option value="0">Price</option>
+                <option value="1">0€ - 50€</option>
+                <option value="2">50€ - 100€</option>
+                <option value="3">100€ - 250€</option>
+                <option value="4">250€ - 500€</option>
+                <option value="5">500€ +</option>
+            </select>
+
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
+                <option value="">Final Date</option>
+                <option value="@DateTime.Now.AddDays(1)">Within a Day</option>
+                <option value="@DateTime.Now.AddDays(7)">Within a Week</option>
+                <option value="@DateTime.Now.AddMonths(1)">Within a Month</option>
+            </select>
         </div>
 
         <!-- Card Display Section with Pagination -->
         <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
-            @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, pageSize))
-            {
-                <div class="ml-2 bg-white w-96 border-black border-2 @((card == 1) ? "border-t-2 mt-5" : "")">
-                    <img src="https://placehold.co/100x100" alt="Card Image" class="w-full" />
-                    <div class="flex flex-col bg-white p-4">
-                        <span class="text-xl font-bold">Seller:</span>
-                        <span class="text-xl font-bold">Card:</span>
-                        <span class="text-xl font-bold">Auction Time:</span>
+            <style>
+                img {
+                    display: block;
+                    max-width: 380px;
+                    max-height: 380px;
+                    width: auto;
+                    height: auto;
+                }
+            </style>
+            @{
+                @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
+                {
+                    var currentLeilao = leiloes[card - 1];
+                    var currentFoto = fotos[currentLeilao.Id].Foto;
+
+                    <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
+                        <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full" />
+                        <div class="flex flex-col bg-white p-4">
+                            <span class="text-xl font-bold">Seller: @usernames[currentLeilao.VendedorId]</span>
+                            <span class="text-xl font-bold">Card: @currentLeilao.Titulo</span>
+                            <span class="text-xl font-bold">Auction Time Limit: @currentLeilao.DataLimite.ToString("MM/dd - HH:mm")</span>
+                        </div>
+                        <div class="bg-white p-4">
+                            <span class="text-xl">Last Bid:@( $"Inicial Price: {currentLeilao.PrecoInicial}")€</span>
+                        </div>
                     </div>
-                    <div class="bg-white p-4">
-                        <span class="text-xl">Last Bid: </span>
-                    </div>
-                </div>
+                }
             }
         </div>
     </div>

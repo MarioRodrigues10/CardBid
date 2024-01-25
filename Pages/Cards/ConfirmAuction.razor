@@ -1,29 +1,68 @@
-@page "/auction/confirm"
+@page "/auction/confirm/{fileId:int}"
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@using System.Globalization
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
+@inject ILeiloesData LeiloesService
+@inject IFotosData FotosService
+@inject IContaData ContaService
+@inject NavigationManager NavigationManager
+
+@code
+{
+    [Parameter]
+    public int fileId { get; set; }
+    private Leiloes l;
+    private Fotos f;
+    CultureInfo culture = new CultureInfo("en-US");
+
+    protected override void OnInitialized()
+    {
+        l = LeiloesService.getLeiloes(fileId);
+        f = FotosService.GetFotos(l.Id);
+    }
+
+    public async Task Confirm()
+    {
+        await LeiloesService.acceptLeilao(l.Id);
+        NavigationManager.NavigateTo("/admin/cards");
+    }
+
+    public async Task Reject()
+    {
+        await LeiloesService.denyLeilao(l.Id);
+        NavigationManager.NavigateTo("/admin/cards");
+    }
+}
 
 <div class="min-h-screen h-fit">
     <div class="h-96 w-full flex flex-col items-center justify-center py-8">
-        <img src="https://placehold.co/200x80" alt="Card Image" class="w-full h-full py-4" />
-        <!-- Add 3 buttons -->
-        <div class="flex flex-row justify-between py-4">
-            <div class="flex flex-row">
-                <button class="bg-black h-8 w-8 rounded-full ml-2"></button>
-                <button class="bg-gray-400 h-8 w-8 rounded-full ml-2"></button>
-                <button class="bg-gray-400 h-8 w-8 rounded-full ml-2"></button>
-            </div>
-        </div>
+        <style>
+            img {
+                display: block;
+                max-width: 525px;
+                max-height: 700px;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+            }
+        </style>
+        <img src="@f.Foto" alt="Card Image" class="w-full h-full py-4" />
     </div>
     <div class="flex flex-col justify-center px-8 py-8 mx-8">
-        <h1 class="font-bold text-3xl py-2">Card Name: <span class="text-red-600">Charizard</span></h1>
-        <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600">User</span></h2>
+        <h1 class="font-bold text-3xl py-2">Card Name: <span class="text-red-600">@l.Titulo</span></h1>
+        <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600">@ContaService.getUsername(l.VendedorId)</span></h2>
+        <h2 class="font-bold text-1xl py-2">Description:  <span class="text-blue-600">@l.Descricao</span></h2>
     </div>
-    <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16">
-        <h1 class="font-bold text-xl py-2 border-b-2 border-black">Auction placed on 3rd December, 2024</h1>
+    <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 mb-8">
+        <h1 class="font-bold text-xl py-2 border-b-2 border-black">Sales end on @l.DataLimite.ToString("dd MMMM, yyyy: HH:mm", culture)</h1>
         <div>
             <p class="font-bold text-2xl py-2">Start Price:</p>
-            <p class="font-bold text-md">100€</p>
+            <p class="font-bold text-md">@(l.PrecoInicial)€</p>
             <div class="flex flex-row space-x-4 py-4">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded">Confirm Auction</button>
-                <button class="bg-red-500 text-white px-4 py-2 rounded">❌ Reject Auction</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded" @onclick="Confirm">Confirm Auction</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded" @onclick="Reject">❌ Reject Auction</button>
             </div>
         </div>
     </div>
