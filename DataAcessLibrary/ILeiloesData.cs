@@ -29,5 +29,13 @@ namespace CardBid.DataAcessLibrary
         public Task<List<Leiloes>> ListAllbyPrice(decimal price);
 
         public Leiloes getLeiloes(int id);
+
+        public Task<List<Leiloes>> GetCreatedLeiloes(int id);
+
+        public Task<List<Leiloes>> GetCollectedLeiloes(int id);
+
+        public Task<List<Leiloes>> GetOffersMadeLeiloes(int id);
+
+        public Task<List<Leiloes>> GetDealsLeiloes(int id);
     }
 }

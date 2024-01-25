@@ -1,0 +1,67 @@
+@using Blazored.LocalStorage
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+
+<div class="flex px-4 py-2 w-full justify-between border-b-[1px] border-black">
+    <div class="flex items-center space-x-4">
+        <a href="/cards" class="text-black px-4 py-2 rounded">Buy Cards</a>
+        <button class="text-black px-4 py-2 rounded" @onclick="NavigateToSellCard">Sell Cards</button>
+    </div>
+    <button class="font-bold text-3xl italic" @onclick="NavigateToHomePage">Card Bid</button>
+    <div class="relative inline-block text-left">
+        <img src="UserIcon.png" alt="User Icon" class="cursor-pointer w-20 h-auto rounded-full" @onclick="ToggleUserOptions" />
+        @if (showUserOptions)
+        {
+            <div class="absolute z-50 mt-2 bg-white border rounded-md shadow-lg">
+                <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="NavigateToProfile">Go to Profile</button>
+                <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="SignOut">Sign Out</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private bool showUserOptions = false;
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private async Task NavigateToSellCard()
+    {
+        var username = await LocalStorage.GetItemAsync<string>("username");
+            
+        if (username != null)
+        {
+            NavigationManager.NavigateTo("/card/new");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    } 
+
+    private void NavigateToHomePage()
+    {
+        NavigationManager.NavigateTo("/");
+    } 
+
+    private void ToggleUserOptions()
+    {
+        showUserOptions = !showUserOptions;
+    }
+
+    private void NavigateToProfile()
+    {
+        NavigationManager.NavigateTo("/profile");
+    }
+
+    private async Task SignOut()
+    {
+        await LocalStorage.RemoveItemAsync("username");
+        NavigationManager.NavigateTo("/");
+        await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+}

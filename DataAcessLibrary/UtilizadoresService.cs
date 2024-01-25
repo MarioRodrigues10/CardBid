@@ -50,5 +50,11 @@ namespace CardBid.DataAcessLibrary
             }
             return null;
         }
+
+        public async Task<string> GetNome(int id)
+        {
+            var utilizador = await _db.Utilizadores.FindAsync(id);
+            return utilizador.Nome;
+        }
     }
 }

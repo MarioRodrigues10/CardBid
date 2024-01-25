@@ -1,9 +1,22 @@
 @page "/profile"
+@using CardBid.Data
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@using Blazored.LocalStorage
+@inject CardBidDbContext DbContext
+@inject ILocalStorageService LocalStorage
+@inject ILeiloesData LeiloesService
+@inject IUtilizadoresData UtilizadoresService
 
 @code {
     int currentPage = 1;
-    int pageSize = 6; // Adjust the number of cards per page as needed
-    int totalCards = 12; // Total number of cards
+    int id;
+    string username;
+    string nome;
+    int pageSize = 6;
+    List<Leiloes> userLeiloes = new List<Leiloes>();
+    int totalCards => userLeiloes.Count;
+    string selectedButton = "Created";
 
     int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
 
@@ -14,6 +27,36 @@
             currentPage = newPage;
         }
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string userId = await LocalStorage.GetItemAsync<string>("id");
+        int id = int.Parse(userId);
+        username = await LocalStorage.GetItemAsync<string>("username");
+        nome = await UtilizadoresService.GetNome(id);
+
+        await FetchUserLeiloes(selectedButton);
+    }
+
+    async Task FetchUserLeiloes(string button)
+    {
+        switch (button)
+        {
+            case "Collected":
+                userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
+                break;
+            case "Offers Made":
+                userLeiloes = await LeiloesService.GetOffersMadeLeiloes(id);
+                break;
+            case "Deals":
+                userLeiloes = await LeiloesService.GetDealsLeiloes(id);
+                break;
+            case "Created":
+            default:
+                userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
+                break;
+        }
+    }
 }
 
 <div class="min-h-screen h-fit max-w-screen">
@@ -22,16 +65,15 @@
     <div class="w-full h-64 bg-gray-200"></div>
     <div class="w-64 h-64 bg-gray-200 rounded-full absolute -mt-32 ml-4 border-4 border-black"></div>
     <div class="ml-80 w-full mt-4">
-        <h1 class="text-3xl font-bold">Username</h1>
-        <p class="text-xl">username</p>
+        <h1 class="text-3xl font-bold">@nome</h1>
+        <p class="text-xl">@username</p>
     </div>
     <div class="flex flex-row justify-center items-center space-x-16 mt-32">
-        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold"><span class="text-center text-2xl">Collected</span></button>
-        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold"><span class="text-center text-2xl">Offers Made</span></button>
-        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold"><span class="text-center text-2xl">Deals</span></button>
-        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold"><span class="text-center text-2xl">Created</span></button>
-    </div>
-    
+        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold" @onclick="() => FetchCreatedLeiloes()"><span class="text-center text-2xl">Created</span></button>
+        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold" @onclick="() => FetchCollectedLeiloes()"><span class="text-center text-2xl">Collected</span></button>
+        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold" @onclick="() => FetchOffersMadeLeiloes()"><span class="text-center text-2xl">Offers Made</span></button>
+        <button class="w-64 h-16 bg-gray-200 mt-4 border-1 border-black text-center my-auto hover:text-bold" @onclick="() => FetchDealsLeiloes()"><span class="text-center text-2xl">Deals</span></button>
+    </div>   
     <!-- Bar Section -->
     <div class="flex flex-row h-full border-black border-y-2 items-center justify-between px-8 py-6 mt-5">
         <div class="flex space-x-16 items-center">
@@ -46,14 +88,14 @@
     
     <!-- Card Section -->
     <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
-        @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, pageSize))
+        @foreach (var leilao in userLeiloes.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
-            <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((card == 1) ? "border-t-2 mt-5" : "")">
+            <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
                 <img src="https://placehold.co/100x100" alt="Card Image" class="w-full" />
                 <div class="flex flex-col bg-white p-4">
-                    <span class="text-xl font-bold">Seller:</span>
-                    <span class="text-xl font-bold">Card:</span>
-                    <span class="text-xl font-bold">Auction Time:</span>
+                    <span class="text-xl font-bold">Title: @leilao.Titulo</span>
+                    <span class="text-xl font-bold">Seller: @leilao.VendedorId</span>
+                    <span class="text-xl font-bold">Auction Time: @leilao.DataLimite</span>
                 </div>
             </div>
         }
@@ -66,3 +108,30 @@
         <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage + 1)">Next</button>
     </div>
 </div>
+
+@code{
+    private async Task FetchCreatedLeiloes()
+    {
+        selectedButton = "Created";
+        await FetchUserLeiloes(selectedButton);
+    }
+
+
+    private async Task FetchCollectedLeiloes()
+    {
+        selectedButton = "Collected";
+        await FetchUserLeiloes(selectedButton);
+    }
+
+    private async Task FetchOffersMadeLeiloes()
+    {
+        selectedButton = "Offers Made";
+        await FetchUserLeiloes(selectedButton);
+    }
+
+    private async Task FetchDealsLeiloes()
+    {
+        selectedButton = "Deals";
+        await FetchUserLeiloes(selectedButton);
+    }
+}

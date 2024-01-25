@@ -4,6 +4,7 @@
 @using CardBid.Exceptions
 @using Microsoft.EntityFrameworkCore
 @using Blazored.LocalStorage
+@inject IJSRuntime JSRuntime
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 @inject CardBidDbContext DbContext
@@ -40,6 +41,7 @@
             await LocalStorage.SetItemAsync("id", c.UtilizadorId);
 
             NavigationManager.NavigateTo("/cards");
+            await JSRuntime.InvokeVoidAsync("location.reload");
         } catch (LoginException) {
             message = "Invalid credentials";
         }

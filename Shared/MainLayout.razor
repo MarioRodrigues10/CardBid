@@ -1,9 +1,38 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>CardBid</PageTitle>
 
 <div class="h-fit max-w-screen">
-    <Navbar/>
+    @if (userLoggedIn)
+    {
+        <!-- If not empty, user is logged in, show logged-in navbar -->
+        <NavbarLoggedIn />
+    }
+    else
+    {
+        <!-- If empty, user is not logged in, show regular navbar -->
+        <Navbar />
+    }
     @Body
 </div>
 <Footer/>
+
+@code {
+    private bool userLoggedIn = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var username = await LocalStorage.GetItemAsync<string>("username");
+
+            if (username != null)
+            {
+                userLoggedIn = true;
+                StateHasChanged(); // Ensure the component re-renders after the async call.
+            }
+        }
+    }
+}

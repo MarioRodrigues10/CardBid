@@ -104,5 +104,60 @@ namespace CardBid.DataAcessLibrary
             return leilao;
         }
 
+        // return the leiloes that the user created
+
+        public async Task<List<Leiloes>> GetCreatedLeiloes(int id)
+        {
+            var leiloes = await _db.Leiloes
+                .Where(l => l.VendedorId == id)
+                .ToListAsync();
+                
+            return leiloes;
+        }
+
+        //return the leiloes that the user won
+
+        public async Task<List<Leiloes>> GetCollectedLeiloes(int id)
+        {
+            var leiloes_ids = await _db.Faturas
+                .Where(f => f.CompradorId == id)
+                .Select(f => f.LeilaoId)
+                .ToListAsync();
+            
+            var leiloes = await _db.Leiloes
+                .Where(l => leiloes_ids.Contains(l.Id))
+                .ToListAsync();
+
+            return leiloes;
+        }
+
+        // return the leiloes that the user made offers
+
+        public async Task<List<Leiloes>> GetOffersMadeLeiloes(int id)
+        {
+            var licitacoes = await _db.Licitacoes
+                .Where(l => l.LicitanteId == id)
+                .Select(l => l.LeilaoId)
+                .Distinct()
+                .ToListAsync();
+
+            var leiloes = await _db.Leiloes
+                .Where(l => licitacoes.Contains(l.Id))
+                .ToListAsync();
+
+            return leiloes;
+        }
+
+        // return the leiloes where the user sold the product
+
+        public async Task<List<Leiloes>> GetDealsLeiloes(int id)
+        {
+            var leiloes = await _db.Leiloes
+                .Where(l => l.VendedorId == id && l.Estado == "Finalizado")
+                .ToListAsync();
+
+            return leiloes;
+        }
+
     }
 }
