@@ -7,8 +7,16 @@
 <div class="h-fit max-w-screen">
     @if (userLoggedIn)
     {
-        <!-- If not empty, user is logged in, show logged-in navbar -->
-        <NavbarLoggedIn />
+
+        <!-- If username is equal to admin, show admin navbar else show user navbar -->
+        @if (userAdmin)
+        {
+            <NavbarAdmin />
+        }
+        else
+        {
+            <NavbarLoggedIn />
+        }
     }
     else
     {
@@ -20,6 +28,7 @@
 <Footer/>
 
 @code {
+    private bool userAdmin = false;
     private bool userLoggedIn = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -30,6 +39,10 @@
 
             if (username != null)
             {
+                if(username == "admin")
+                {
+                    userAdmin = true;
+                }
                 userLoggedIn = true;
                 StateHasChanged(); // Ensure the component re-renders after the async call.
             }
