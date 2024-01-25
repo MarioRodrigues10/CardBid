@@ -18,7 +18,7 @@
         <label class="font-bold" for="title">Title:</label>
         <input type="text" placeholder="Title" @bind="@Title" class="border-black border-2 px-4 py-2 rounded" >
         <label class="font-bold" for="name"1>Starting Price:</label>
-        <input type="number" @bind="@listingPrice" @oninput="updateBidFee" placeholder="" class="border-black border-2 px-4 py-2 rounded" />
+        <input type="number" @bind="@listingPrice" placeholder="" class="border-black border-2 px-4 py-2 rounded" />
         <label class="font-bold" for="description">Description:</label>
         <input type="text" placeholder="Description" @bind="Description" class="border-black border-2 px-4 py-2 rounded" >
         <label class="font-bold" for="price">Degredation Level:</label>
@@ -69,7 +69,7 @@
     private List<GrauDegradacao> gds;
 
     private int listingPrice = 100;
-    private double bidFee = 5;
+    private double bidFee => Math.Round(listingPrice * 0.05,2);
     DateTime dateTime = DateTime.Now.AddHours(24);
     private string Title;
     private string Description;
@@ -97,10 +97,6 @@
 
         Level = levels[0];
         Collection = collections[0];
-    }
-
-    private void updateBidFee() {
-        bidFee = listingPrice * 0.05;
     }
 
     private async void RegisterAuction()
