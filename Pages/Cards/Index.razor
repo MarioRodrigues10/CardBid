@@ -16,15 +16,17 @@
 
     private string FilterCategoria = "";
     private string FilterUser = "";
-    private int FilterPrecoMin = 0;
+    private (int,int) FilterPreco = (0,0);
     private int FilterGrauDegradacao = 0;
     private DateTime? FilterDate = null;
 
     private Dictionary<int,Leiloes> Allleiloes = new Dictionary<int,Leiloes>();
+    private Dictionary<int, decimal> currentBids = new Dictionary<int, decimal>();
+
     private List<Leiloes> leiloes => Allleiloes.Values.Where(l =>
         (FilterCategoria == "" || l.Categoria == FilterCategoria) &&
         (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
-        l.PrecoInicial >= FilterPrecoMin &&
+        (FilterPreco == (0,0) || (FilterPreco.Item1 < currentBids[l.Id] && FilterPreco.Item2 > currentBids[l.Id])) &&
         (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
         (FilterDate == null || l.DataLimite <= FilterDate)
     ).ToList();
@@ -52,25 +54,48 @@
         usernames = ContaService.getAllUsernames(Allleiloes.Select(l => l.Value.VendedorId).ToList());
         collections = CategoriaService.GetCategorias();
         levels = GrauDegradacaoService.GetGrausDegradacao();
-    }
 
-    private string ShowBid(Leiloes l)
-    {
-        if (l.MaiorLicitacao == null)
+        foreach (var l in Allleiloes.Values)
         {
-            return $"No bids yet. Price: {l.PrecoInicial}";
-        }
-        else
-        {
-            Licitacoes li = LicitacoesService.getLicitacao(l.MaiorLicitacao.Value);
-            var s = li.Valor.ToString();
-            return s;
+            if (l.MaiorLicitacao != null)
+            {
+                currentBids.Add(l.Id, LicitacoesService.getLicitacao(l.MaiorLicitacao.Value).Valor);
+            }
+            else
+            {
+                currentBids.Add(l.Id, l.PrecoInicial);
+            }
         }
     }
 
     private void ShowCard(Leiloes leilao)
     {
         NavigationManager.NavigateTo($"/cards/buy/{leilao.Id}");
+    }
+
+    private void UpdateFilterPreco(ChangeEventArgs e)
+    {
+        switch (e.Value)
+        {
+            case "1":
+                FilterPreco = (0, 50);
+                break;
+            case "2":
+                FilterPreco = (50, 100);
+                break;
+            case "3":
+                FilterPreco = (100, 250);
+                break;
+            case "4":
+                FilterPreco = (250, 500);
+                break;
+            case "5":
+                FilterPreco = (500, 100000);
+                break;
+            default:
+                FilterPreco = (0, 0);
+                break;
+        }
     }
 }
 
@@ -120,19 +145,20 @@
                 }
             </select>
 
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterPrecoMin">
-                <option value=0>Price</option>
-                <option>Price</option>
-                <option>João</option>
-                <option>Pedro</option>
-                <option>Joana</option>
+            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @onchange="UpdateFilterPreco">
+                <option value="0">Price</option>
+                <option value="1">0€ - 50€</option>
+                <option value="2">50€ - 100€</option>
+                <option value="3">100€ - 250€</option>
+                <option value="4">250€ - 500€</option>
+                <option value="5">500€ +</option>
             </select>
             
             <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
-                <option>Final Date</option>
-                <option>João</option>
-                <option>Pedro</option>
-                <option>Joana</option>
+                <option value="">Final Date</option>
+                <option value="@DateTime.Now.AddDays(1)">Within a Day</option>
+                <option value="@DateTime.Now.AddDays(7)">Within a Week</option>
+                <option value="@DateTime.Now.AddMonths(1)">Within a Month</option>
             </select>
         </div>
 
@@ -147,19 +173,25 @@
                     height: auto;
                 }
             </style>
-            @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
-            {
-                <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
-                    <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(leiloes[card-1])" class="w-full"/>
-                    <div class="flex flex-col bg-white p-4">
-                        <span class="text-xl font-bold">Seller: @usernames[leiloes[card-1].VendedorId]</span>
-                        <span class="text-xl font-bold">Card: @leiloes[card - 1].Titulo</span>
-                        <span class="text-xl font-bold">Auction Time Limit: @leiloes[card - 1].DataLimite.ToString("MM/dd - HH:mm")</span>
+            @{
+                @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
+                {
+                    var currentLeilao = leiloes[card - 1];
+                    var currentFoto = fotos[currentLeilao.Id].Foto;
+                    var currentBid = currentBids[currentLeilao.Id].ToString();
+
+                    <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
+                        <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full"/>
+                        <div class="flex flex-col bg-white p-4">
+                            <span class="text-xl font-bold">Seller: @usernames[currentLeilao.VendedorId]</span>
+                            <span class="text-xl font-bold">Card: @currentLeilao.Titulo</span>
+                            <span class="text-xl font-bold">Auction Time Limit: @currentLeilao.DataLimite.ToString("MM/dd - HH:mm")</span>
+                        </div>
+                        <div class="bg-white p-4">
+                            <span class="text-xl">Last Bid:@(currentLeilao.MaiorLicitacao == null ? $"No bids yet. Price: {currentBid}" : currentBid)€</span>
+                        </div>
                     </div>
-                    <div class="bg-white p-4">
-                        <span class="text-xl">Last Bid: @ShowBid(leiloes[card-1])€</span>
-                    </div>
-                </div>
+                }
             }
         </div>
     </div>
