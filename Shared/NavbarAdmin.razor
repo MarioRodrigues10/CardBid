@@ -7,6 +7,9 @@
         <button class="text-black px-4 py-2 rounded" @onclick="NavigateToEvaluateAuctions">Evaluate Auctions</button>
     </div>
     <div>
+        <button class="font-bold text-3xl italic" @onclick="NavigateToHomePage">Card Bid</button>
+    </div>
+    <div>
         <button class="bg-black text-white px-4 py-2 rounded" @onclick="SignOut">Sign Out</button>
     </div>
 </div>
@@ -22,5 +25,10 @@
         await LocalStorage.RemoveItemAsync("username");
         NavigationManager.NavigateTo("/");
         await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+
+    private void NavigateToHomePage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
