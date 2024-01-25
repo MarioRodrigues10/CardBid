@@ -1,12 +1,14 @@
 @page "/admin/cards"
 @using CardBid.Data.Models
 @using CardBid.DataAcessLibrary
+@using Blazored.LocalStorage
 @inject ILeiloesData LeiloesService
 @inject ILicitacoesData LicitacoesService
 @inject IFotosData FotosService
 @inject IContaData ContaService
 @inject ICategoriaData CategoriaService
 @inject IGrauDegradacaoData GrauDegradacaoService
+@inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
 @code {
@@ -20,6 +22,7 @@
     private int FilterGrauDegradacao = 0;
     private DateTime? FilterDate = null;
     private string FilterOrder = "PriceLowToHigh";
+    private string logedIn = "admin";
 
     private Dictionary<int, Leiloes> Allleiloes = new Dictionary<int, Leiloes>();
 
@@ -73,6 +76,13 @@
         levels = GrauDegradacaoService.GetGrausDegradacao();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        logedIn = await LocalStorage.GetItemAsync<string>("username");
+        if (logedIn != "admin")
+            StateHasChanged();
+    }
+
     private void ShowCard(Leiloes leilao)
     {
         NavigationManager.NavigateTo($"/auction/confirm/{leilao.Id}");
@@ -103,107 +113,115 @@
         }
     }
 }
-
-<div class="min-h-screen h-full flex flex-col">
-    <!-- Header Section -->
-    <div class="flex flex-row h-full border-black border-y-2 bg-gray-200 items-center justify-between px-4 py-6 mt-5">
-        <div class="flex space-x-16 items-center">
-            <div class="flex items-center space-x-2">
-                <span>🟢</span>
-                <span class="text-2xl font-bold">Live</span>
+@if (logedIn != "admin")
+{
+    <h1>Not authorized</h1>
+    <p>You are not authorized to view this page.</p>
+    <a href="/">Back to Home</a>
+}
+else
+{
+    <div class="min-h-screen h-full flex flex-col">
+        <!-- Header Section -->
+        <div class="flex flex-row h-full border-black border-y-2 bg-gray-200 items-center justify-between px-4 py-6 mt-5">
+            <div class="flex space-x-16 items-center">
+                <div class="flex items-center space-x-2">
+                    <span>🟢</span>
+                    <span class="text-2xl font-bold">Live</span>
+                </div>
+                <span class="text-xl">Showing: @totalCards results</span>
             </div>
-            <span class="text-xl">Showing: @totalCards results</span>
-        </div>
-        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64" @bind="FilterOrder">
-            <option value="PriceLowToHigh">Price Low to High</option>
-            <option value="PriceHighToLow">Price High to Low</option>
-            <option value="Level">Level</option>
-        </select>
-    </div>
-
-    <!-- Filters and Cards Section -->
-    <div class="flex flex-row">
-        <!-- Filters Sidebar -->
-        <div class="bg-gray-200 h-fit w-1/3 p-4">
-            <h1 class="font-bold text-3xl mb-2">Filters</h1>
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterUser">
-                <option value="">Owner</option>
-                @foreach (var user in usernames.Values)
-                {
-                    <option>@user</option>
-                }
-            </select>
-
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterCategoria">
-                <option value="">Collection</option>
-                @foreach (var collection in collections)
-                {
-                    <option>@collection.categoria</option>
-                }
-            </select>
-
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterGrauDegradacao">
-                <option value=0>Degradation</option>
-                @foreach (var level in levels)
-                {
-                    <option value="@level.grauDegradacao">@level.Designacao</option>
-                }
-            </select>
-
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @onchange="UpdateFilterPreco">
-                <option value="0">Price</option>
-                <option value="1">0€ - 50€</option>
-                <option value="2">50€ - 100€</option>
-                <option value="3">100€ - 250€</option>
-                <option value="4">250€ - 500€</option>
-                <option value="5">500€ +</option>
-            </select>
-
-            <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
-                <option value="">Final Date</option>
-                <option value="@DateTime.Now.AddDays(1)">Within a Day</option>
-                <option value="@DateTime.Now.AddDays(7)">Within a Week</option>
-                <option value="@DateTime.Now.AddMonths(1)">Within a Month</option>
+            <select class="border-2 bg-white border-black rounded px-2 py-4 w-64" @bind="FilterOrder">
+                <option value="PriceLowToHigh">Price Low to High</option>
+                <option value="PriceHighToLow">Price High to Low</option>
+                <option value="Level">Level</option>
             </select>
         </div>
 
-        <!-- Card Display Section with Pagination -->
-        <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
-            <style>
-                img {
-                    display: block;
-                    max-width: 380px;
-                    max-height: 380px;
-                    width: auto;
-                    height: auto;
-                }
-            </style>
-            @{
-                @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
-                {
-                    var currentLeilao = leiloes[card - 1];
-                    var currentFoto = fotos[currentLeilao.Id].Foto;
+        <!-- Filters and Cards Section -->
+        <div class="flex flex-row">
+            <!-- Filters Sidebar -->
+            <div class="bg-gray-200 h-fit w-1/3 p-4">
+                <h1 class="font-bold text-3xl mb-2">Filters</h1>
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterUser">
+                    <option value="">Owner</option>
+                    @foreach (var user in usernames.Values)
+                    {
+                        <option>@user</option>
+                    }
+                </select>
 
-                    <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
-                        <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full" />
-                        <div class="flex flex-col bg-white p-4">
-                            <span class="text-xl font-bold">Seller: @usernames[currentLeilao.VendedorId]</span>
-                            <span class="text-xl font-bold">Card: @currentLeilao.Titulo</span>
-                            <span class="text-xl font-bold">Auction Time Limit: @currentLeilao.DataLimite.ToString("MM/dd - HH:mm")</span>
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterCategoria">
+                    <option value="">Collection</option>
+                    @foreach (var collection in collections)
+                    {
+                        <option>@collection.categoria</option>
+                    }
+                </select>
+
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterGrauDegradacao">
+                    <option value=0>Degradation</option>
+                    @foreach (var level in levels)
+                    {
+                        <option value="@level.grauDegradacao">@level.Designacao</option>
+                    }
+                </select>
+
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @onchange="UpdateFilterPreco">
+                    <option value="0">Price</option>
+                    <option value="1">0€ - 50€</option>
+                    <option value="2">50€ - 100€</option>
+                    <option value="3">100€ - 250€</option>
+                    <option value="4">250€ - 500€</option>
+                    <option value="5">500€ +</option>
+                </select>
+
+                <select class="bg-gray-200 font-bold px-2 py-4 w-64 focus:border-black border-2 mb-2" @bind="FilterDate">
+                    <option value="">Final Date</option>
+                    <option value="@DateTime.Now.AddDays(1)">Within a Day</option>
+                    <option value="@DateTime.Now.AddDays(7)">Within a Week</option>
+                    <option value="@DateTime.Now.AddMonths(1)">Within a Month</option>
+                </select>
+            </div>
+
+            <!-- Card Display Section with Pagination -->
+            <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
+                <style>
+                    img {
+                        display: block;
+                        max-width: 380px;
+                        max-height: 380px;
+                        width: auto;
+                        height: auto;
+                    }
+                </style>
+                @{
+                    @foreach (var card in Enumerable.Range((currentPage - 1) * pageSize + 1, Math.Min(pageSize, leiloes.Count - (currentPage - 1) * pageSize)))
+                    {
+                        var currentLeilao = leiloes[card - 1];
+                        var currentFoto = fotos[currentLeilao.Id].Foto;
+
+                        <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
+                            <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full" />
+                            <div class="flex flex-col bg-white p-4">
+                                <span class="text-xl font-bold">Seller: @usernames[currentLeilao.VendedorId]</span>
+                                <span class="text-xl font-bold">Card: @currentLeilao.Titulo</span>
+                                <span class="text-xl font-bold">Auction Time Limit: @currentLeilao.DataLimite.ToString("MM/dd - HH:mm")</span>
+                            </div>
+                            <div class="bg-white p-4">
+                                <span class="text-xl">Last Bid:@( $"Inicial Price: {currentLeilao.PrecoInicial}")€</span>
+                            </div>
                         </div>
-                        <div class="bg-white p-4">
-                            <span class="text-xl">Last Bid:@( $"Inicial Price: {currentLeilao.PrecoInicial}")€</span>
-                        </div>
-                    </div>
+                    }
                 }
-            }
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex justify-center items-center my-4">
+            <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage - 1)">Previous</button>
+            <span class="mx-4">Page @currentPage of @TotalPages</span>
+            <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage + 1)">Next</button>
         </div>
     </div>
-
-    <!-- Pagination Controls -->
-    <div class="flex justify-center items-center my-4">
-        <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage - 1)">Previous</button>
-        <span class="mx-4">Page @currentPage of @TotalPages</span>
-        <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage + 1)">Next</button>
-    </div>
-</div>
+}

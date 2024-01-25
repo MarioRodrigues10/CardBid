@@ -17,12 +17,20 @@
     private Fotos f;
     private string username;
     CultureInfo culture = new CultureInfo("en-US");
+    private string logedIn = "admin";
 
     protected override void OnInitialized()
     {
         l = LeiloesService.getLeiloes(fileId);
         f = FotosService.GetFotos(l.Id);
         username = ContaService.getUsername(l.VendedorId);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        logedIn = await LocalStorage.GetItemAsync<string>("username");
+        if (logedIn != "admin")
+            StateHasChanged();
     }
 
     public async Task Confirm()
@@ -38,34 +46,43 @@
     }
 }
 
-<div class="min-h-screen h-fit">
-    <div class="h-96 w-full flex flex-col items-center justify-center py-8">
-        <style>
-            img {
+@if (logedIn != "admin")
+{
+    <h1>Not authorized</h1>
+    <p>You are not authorized to view this page.</p>
+    <a href="/">Back to Home</a>
+}
+else
+{
+    <div class="min-h-screen h-fit">
+        <div class="h-96 w-full flex flex-col items-center justify-center py-8">
+            <style>
+                img {
                 display: block;
                 max-width: 525px;
                 max-height: 700px;
                 width: auto;
                 height: auto;
                 object-fit: contain;
-            }
-        </style>
-        <img src="@f.Foto" alt="Card Image" class="w-full h-full py-4" />
-    </div>
-    <div class="flex flex-col justify-center px-8 py-8 mx-8">
-        <h1 class="font-bold text-3xl py-2">Card Name: <span class="text-red-600">@l.Titulo</span></h1>
-        <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600">@username</span></h2>
-        <h2 class="font-bold text-1xl py-2">Description:  <span class="text-blue-600">@l.Descricao</span></h2>
-    </div>
-    <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 mb-8">
-        <h1 class="font-bold text-xl py-2 border-b-2 border-black">Sales end on @l.DataLimite.ToString("dd MMMM, yyyy: HH:mm", culture)</h1>
-        <div>
-            <p class="font-bold text-2xl py-2">Start Price:</p>
-            <p class="font-bold text-md">@(l.PrecoInicial)€</p>
-            <div class="flex flex-row space-x-4 py-4">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded" @onclick="Confirm">Confirm Auction</button>
-                <button class="bg-red-500 text-white px-4 py-2 rounded" @onclick="Reject">❌ Reject Auction</button>
+                }
+            </style>
+            <img src="@f.Foto" alt="Card Image" class="w-full h-full py-4" />
+        </div>
+        <div class="flex flex-col justify-center px-8 py-8 mx-8">
+            <h1 class="font-bold text-3xl py-2">Card Name: <span class="text-red-600">@l.Titulo</span></h1>
+            <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600">@username</span></h2>
+            <h2 class="font-bold text-1xl py-2">Description:  <span class="text-blue-600">@l.Descricao</span></h2>
+        </div>
+        <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 mb-8">
+            <h1 class="font-bold text-xl py-2 border-b-2 border-black">Sales end on @l.DataLimite.ToString("dd MMMM, yyyy: HH:mm", culture)</h1>
+            <div>
+                <p class="font-bold text-2xl py-2">Start Price:</p>
+                <p class="font-bold text-md">@(l.PrecoInicial)€</p>
+                <div class="flex flex-row space-x-4 py-4">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded" @onclick="Confirm">Confirm Auction</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded" @onclick="Reject">❌ Reject Auction</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}

@@ -17,7 +17,9 @@
     private List<Licitacoes> licitacoes;
     private decimal currentbid;
     private decimal bid;
+    private bool showList => licitacoes.Count != 0;
     CultureInfo culture = new CultureInfo("en-US");
+    CultureInfo culturept = new CultureInfo("pt-PT");
     private string Error = "";
     protected override void OnInitialized()
     {
@@ -29,25 +31,32 @@
 
     private async Task ExecuteBid()
     {
-        int currentId = await LocalStorage.GetItemAsync<int>("id");
+        int? currentId = await LocalStorage.GetItemAsync<int?>("id");
 
-        if (currentId == l.VendedorId)
+        if (currentId == null)
+        {
+            Error = "Admin's can't bid on auctions!";
+            return;
+        }
+
+        if (currentId.Value == l.VendedorId)
         {
             Error = "You can't bid on your own card";
             return;
         }
 
+        if (licitacoes.Count != 0 && licitacoes[0].LicitanteId == currentId.Value)
+        {
+            Error = "You already have the highest bid";
+            return;
+        }
+
         if (bid > currentbid)
         {
-            if (licitacoes[0].LicitanteId == currentId)
-            {
-                Error = "You already have the highest bid";
-                return;
-            }
             Licitacoes licitacao = new Licitacoes
             {
                 Data = DateTime.Now,
-                LicitanteId = currentId,
+                LicitanteId = currentId.Value,
                 LeilaoId = l.Id,
                 Valor = bid
             };
@@ -60,6 +69,7 @@
             };
 
             licitacoes.Insert(0,licitacao);
+            currentbid = bid;
             base.ShouldRender();
         }
         else
@@ -93,7 +103,7 @@
         <h1 class="font-bold text-xl py-2 border-b-2 border-black">Sales end on @l.DataLimite.ToString("dd MMMM, yyyy: HH:mm", culture)</h1>
         <div>
             <p class="font-bold text-2xl py-2">Current Price:</p>
-            <p class="font-bold text-md">@(currentbid)€</p>
+            <p class="font-bold text-md">@(currentbid.ToString("N2", culturept))€</p>
             <div class="flex flex-row space-x-4 py-4">
                 <input type="number" placeholder="Enter Bid" @bind=bid class="border-black border-2 px-4 py-2 rounded-md" />
                 <button class="bg-blue-500 text-white px-4 py-2 rounded"@onclick="ExecuteBid">Place Bid</button>
@@ -105,7 +115,7 @@
         </div>
     </div>
 
-    @if(l.MaiorLicitacao != null)
+    @if(showList)
     {
         <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 my-8">
             <h1 class="font-bold text-xl py-2 border-b-2 border-black text-black">🏷️ Latest Offers</h1>
@@ -118,7 +128,7 @@
             @foreach(Licitacoes licitacao in licitacoes)
             {
                 <div class="flex flex-row justify-between py-4 border-b-2 px-4 border-black">
-                    <span class="text-md">@licitacao.Valor.ToString()</span>
+                    <span class="text-md">@licitacao.Valor.ToString("N2", culturept)€</span>
                     <span class="text-md">@(Math.Round(((licitacao.Valor - l.PrecoInicial) / l.PrecoInicial) *100, 2))%</span>
                     <span class="text-md">@licitacao.Data.ToString("dd MMMM, yyyy: HH:mm",culture)</span>
                     <span class="text-md">@ContaService.getUsername(licitacao.LicitanteId)</span>

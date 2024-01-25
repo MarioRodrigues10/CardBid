@@ -40,7 +40,11 @@
             await LocalStorage.SetItemAsync("username", Username);
             await LocalStorage.SetItemAsync("id", c.UtilizadorId);
 
-            NavigationManager.NavigateTo("/cards");
+            if (c.NomeUtilizador == "admin")
+                NavigationManager.NavigateTo("/admin/cards");
+            else 
+                NavigationManager.NavigateTo("/cards");
+
             await JSRuntime.InvokeVoidAsync("location.reload");
         } catch (LoginException) {
             message = "Invalid credentials";
