@@ -76,7 +76,7 @@ namespace CardBid.DataAcessLibrary
 
         public string getUsername(int id)
         {
-            Conta conta = _db.Conta.Where(c => c.UtilizadorId == id).First();
+            Conta conta = _db.Conta.Where(c => c.UtilizadorId == id).Single();
             return conta.NomeUtilizador;
         }
 

@@ -31,12 +31,6 @@
     {
         int currentId = await LocalStorage.GetItemAsync<int>("id");
 
-        if (licitacoes[0].LicitanteId == currentId)
-        {
-            Error = "You already have the highest bid";
-            return;
-        }
-
         if (currentId == l.VendedorId)
         {
             Error = "You can't bid on your own card";
@@ -45,6 +39,11 @@
 
         if (bid > currentbid)
         {
+            if (licitacoes[0].LicitanteId == currentId)
+            {
+                Error = "You already have the highest bid";
+                return;
+            }
             Licitacoes licitacao = new Licitacoes
             {
                 Data = DateTime.Now,
