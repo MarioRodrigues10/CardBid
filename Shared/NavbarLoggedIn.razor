@@ -22,6 +22,7 @@
 </div>
 
 @code {
+
     private bool showUserOptions = false;
 
     private void NavigateToLogin()
@@ -53,9 +54,11 @@
         showUserOptions = !showUserOptions;
     }
 
-    private void NavigateToProfile()
+    private async void NavigateToProfile()
     {
-        NavigationManager.NavigateTo("/profile");
+        int? userId = await LocalStorage.GetItemAsync<int>("id");
+        string username = await LocalStorage.GetItemAsync<string>("username");
+        NavigationManager.NavigateTo($"/profile/{username}/{userId.Value}");
     }
 
     private async Task SignOut()

@@ -1,4 +1,4 @@
-@page "/profile"
+@page "/profile/{username}/{id:int}"
 @using CardBid.Data
 @using CardBid.Data.Models
 @using CardBid.DataAcessLibrary
@@ -12,8 +12,6 @@
 
 @code {
     int currentPage = 1;
-    int id;
-    string username;
     string nome;
     int pageSize = 6;
     List<Leiloes> userLeiloes = new List<Leiloes>();
@@ -23,6 +21,12 @@
     List<decimal> userLicitacoesValor = new List<decimal>();
 
     private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
+
+    [Parameter]
+    public int id { get; set; }
+
+    [Parameter]
+    public string username { get; set; }
 
     void ChangePage(int newPage)
     {
@@ -34,9 +38,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string userId = await LocalStorage.GetItemAsync<string>("id");
-        id = int.Parse(userId);
-        username = await LocalStorage.GetItemAsync<string>("username");
         nome = await UtilizadoresService.GetNome(id);
 
         userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
