@@ -20,6 +20,7 @@
     private int FilterGrauDegradacao = 0;
     private DateTime? FilterDate = null;
     private string FilterOrder = "PriceLowToHigh";
+    private string search = "";
 
     private Dictionary<int, Leiloes> Allleiloes = new Dictionary<int, Leiloes>();
     private Dictionary<int, decimal> currentBids = new Dictionary<int, decimal>();
@@ -33,7 +34,8 @@
                         (FilterUser == "" || usernames[l.VendedorId] == FilterUser) &&
                         (FilterPreco == (0,0) || (FilterPreco.Item1<currentBids[l.Id] && FilterPreco.Item2> currentBids[l.Id])) &&
                         (FilterGrauDegradacao == 0 || l.GrauDeDegradacao == FilterGrauDegradacao) &&
-                        (FilterDate == null || l.DataLimite <= FilterDate)
+                        (FilterDate == null || l.DataLimite <= FilterDate) &&
+                        (search == "" || l.Titulo.Contains(search, StringComparison.OrdinalIgnoreCase))
                         ).OrderBy(l => currentBids[l.Id]).ToList();
             switch(FilterOrder)
             {
@@ -127,6 +129,11 @@
             </div>
             <span class="text-xl">Showing: @totalCards results</span>
         </div>
+
+        <div class="flex flex-col space-y-4">
+            <input style='width: 700px' type="text" placeholder="Search" class="border-black border-2 px-4 py-2 rounded" @bind="search">
+        </div>
+
         <select class="border-2 bg-white border-black rounded px-2 py-4 w-64" @bind="FilterOrder">
             <option value="PriceLowToHigh">Price Low to High</option>
             <option value="PriceHighToLow">Price High to Low</option>

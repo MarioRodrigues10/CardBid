@@ -40,7 +40,7 @@
             <h2 class="font-bold text-2xl">Discover How Our Cards Auctions Works</h2>
             <p>At our auctions, you can bide a wide variety of collectible cards from different categories and eras.</p>
             <div class="flex flex-row py-4">
-                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2">Bid</button>
+                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2" @onclick = "NavigateToCards">Bid</button>
                 <button class="bg-white text-black px-4 py-2 rounded mx-2">Win ></button>
             </div>
         </div>
@@ -49,7 +49,7 @@
             <h2 class="font-bold text-2xl">Secure your Favorite Cards with Ease</h2>
             <p class="w-fit break-normal">Once you win an auction, you can securily complete your purchase and have the cards delivered to your doorstep.</p>
             <div class="py-4">
-                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2">Purchase</button>
+                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2" @onclick = "NavigateToCards">Purchase</button>
             </div>
         </div>
     </div>
@@ -71,8 +71,8 @@
             <h2 class="font-bold text-2xl mb-2">Discover the best card auctions</h2>
             <p>Explore a wide selection of rare and valuable cards for auction.</p>
             <div class="flex flex-row py-2">
-                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2 w-24">Bid</button>
-                <button class="bg-black text-white px-4 py-2 rounded mx-2 w-24">Join</button>
+                <button class="bg-white text-black border-black border-2 px-4 py-2 rounded mx-2 w-24" @onclick = "NavigateToCards">Bid</button>
+                <button class="bg-black text-white px-4 py-2 rounded mx-2 w-24" @onclick = "NavigateToRegister">Join</button>
             </div>
         </div>
 
@@ -93,6 +93,16 @@
     private void NavigateToLearnMore()
     {
         NavigationManager.NavigateTo("/learnmore");
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+private void NavigateToCards()
+    {
+        NavigationManager.NavigateTo("/cards");
     }
 }
 
