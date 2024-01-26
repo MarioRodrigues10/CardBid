@@ -62,7 +62,7 @@
     <!-- Bar Section -->
     <div class="flex flex-row h-full border-black border-y-2 items-center justify-between px-8 py-6 mt-5">
         <div class="flex space-x-16 items-center">
-            <input type="search" placeholder="Search" class="border-black border-2 px-4 py-2 rounded w-96">
+            <input type="search" placeholder="Search" @bind="searchTerm" class="border-black border-2 px-4 py-2 rounded w-96">
         </div>
         <select class="border-2 bg-white border-black rounded px-2 py-4 w-64 font-bold" @onchange="HandleSortChange">
             <option>Price Low to High</option>
@@ -73,7 +73,10 @@
     
     <!-- Card Section -->
     <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
-        @foreach (var leilao in userLeiloes.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        @foreach (var leilao in userLeiloes
+            .Where(l => string.IsNullOrWhiteSpace(searchTerm) || l.Titulo.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize))
         {
             <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
                 <img src="https://placehold.co/100x100" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
@@ -95,6 +98,8 @@
 </div>
 
 @code{
+    string searchTerm = "";
+
     private async Task SortLeiloes(){
         switch(currentSortOption){
             case "Price Low to High":
