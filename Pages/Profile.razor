@@ -8,6 +8,7 @@
 @inject IUtilizadoresData UtilizadoresService
 @inject NavigationManager NavigationManager
 @inject IFotosData FotosService
+@inject ILicitacoesData LicitacoesService
 
 @code {
     int currentPage = 1;
@@ -18,8 +19,10 @@
     List<Leiloes> userLeiloes = new List<Leiloes>();
     int totalCards => userLeiloes.Count;
     string selectedButton = "Created";
+    string currentSortOption = "Price Low to High";
+    List<decimal> userLicitacoesValor = new List<decimal>();
 
-    int TotalPages => (int)Math.Ceiling((double)totalCards / pageSize);
+    private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
     void ChangePage(int newPage)
     {
@@ -36,27 +39,8 @@
         username = await LocalStorage.GetItemAsync<string>("username");
         nome = await UtilizadoresService.GetNome(id);
 
-        await FetchUserLeiloes(selectedButton);
-    }
-
-    async Task FetchUserLeiloes(string button)
-    {
-        switch (button)
-        {
-            case "Collected":
-                userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
-                break;
-            case "Offers Made":
-                userLeiloes = await LeiloesService.GetOffersMadeLeiloes(id);
-                break;
-            case "Deals":
-                userLeiloes = await LeiloesService.GetDealsLeiloes(id);
-                break;
-            case "Created":
-            default:
-                userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
-                break;
-        }
+        userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
+        await SortLeiloes();
     }
 }
 
@@ -80,7 +64,7 @@
         <div class="flex space-x-16 items-center">
             <input type="search" placeholder="Search" class="border-black border-2 px-4 py-2 rounded w-96">
         </div>
-        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64 font-bold">
+        <select class="border-2 bg-white border-black rounded px-2 py-4 w-64 font-bold" @onchange="HandleSortChange">
             <option>Price Low to High</option>
             <option>Price High to Low</option>
             <option>Level</option>
@@ -111,29 +95,56 @@
 </div>
 
 @code{
+    private async Task SortLeiloes(){
+        switch(currentSortOption){
+            case "Price Low to High":
+                userLicitacoesValor =  await LicitacoesService.GetLicitacoesValor(userLeiloes);
+                userLeiloes = userLeiloes.OrderBy(l => userLicitacoesValor[userLeiloes.IndexOf(l)]).ToList();
+                break;
+            case "Price High to Low":
+                userLicitacoesValor = await LicitacoesService.GetLicitacoesValor(userLeiloes);
+                userLeiloes = userLeiloes.OrderByDescending(l => userLicitacoesValor[userLeiloes.IndexOf(l)]).ToList();
+                break;
+            case "Level":
+                userLeiloes = userLeiloes.OrderBy(l => l.GrauDeDegradacao).ToList();
+                break;
+        }
+        StateHasChanged();
+    }
+
+    private async void HandleSortChange(ChangeEventArgs e)
+    {
+        currentSortOption = e.Value.ToString();
+        await SortLeiloes();
+    }
+
     private async Task FetchCreatedLeiloes()
     {
         selectedButton = "Created";
-        await FetchUserLeiloes(selectedButton);
+        userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
+        await SortLeiloes();
     }
 
 
     private async Task FetchCollectedLeiloes()
     {
         selectedButton = "Collected";
-        await FetchUserLeiloes(selectedButton);
+        userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
+        await SortLeiloes();
     }
 
     private async Task FetchOffersMadeLeiloes()
     {
         selectedButton = "Offers Made";
-        await FetchUserLeiloes(selectedButton);
+        userLeiloes = await LeiloesService.GetOffersMadeLeiloes(id);
+        await SortLeiloes();
     }
 
     private async Task FetchDealsLeiloes()
     {
         selectedButton = "Deals";
-        await FetchUserLeiloes(selectedButton);
+        userLeiloes = await LeiloesService.GetDealsLeiloes(id);
+        await SortLeiloes();
     }
 
     private void ShowCard(int id)
