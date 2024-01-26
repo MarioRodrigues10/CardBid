@@ -140,13 +140,13 @@
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-        string type = file.ContentType;
         if (file != null)
         {
-            var imageFile = await file.RequestImageFileAsync(type, 100, 100);
-            var buffer = new byte[imageFile.Size];
-            await imageFile.OpenReadStream().ReadAsync(buffer);
-            var filename = $"{Guid.NewGuid()}.{type.Substring(6)}";
+            string type = Path.GetExtension(file.Name).ToLower();
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+
+            var filename = $"{Guid.NewGuid()}{type}";
             var imagePath = $"wwwroot/Images/{filename}";
             await File.WriteAllBytesAsync(imagePath, buffer);
 
