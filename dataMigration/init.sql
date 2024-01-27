@@ -147,8 +147,45 @@ BEGIN
       (10, 'Gem Mint');
 END
 
+IF NOT EXISTS (SELECT 1 FROM Utilizadores)
+BEGIN
+    INSERT INTO Utilizadores(NIF, Email, Nome, DataDeNascimento, Genero, Telefone, Morada)
+    VALUES
+        ('123456789', 'jojo@gmail.com', 'Joao Coelho', '2003-12-12', 'M', '987654321', 'Rua do Ferreiro'),
+        ('132456789', 'duarte@gmail.com', 'Duarte Araújo', '2003-06-12', 'M', '978654321', 'Rua da rua'),
+        ('142356789', 'jose@gmail.com', 'José Rodrigues', '2003-12-11', 'M', '978564321', 'Rua do nada');
+END
+
 IF NOT EXISTS (SELECT 1 FROM Conta)
 BEGIN
     INSERT INTO Conta (NomeUtilizador, PalavraPasse, UtilizadorId)
-    VALUES ('admin', 'admin', null);
-END    
+    VALUES 
+        ('admin', 'admin', null),
+        ('jojo','jojo',1),
+        ('duarte','duarte',2),
+        ('jose','jose',3);
+END
+
+IF NOT EXISTS (SELECT 1 FROM Leiloes)
+BEGIN
+    INSERT INTO Leiloes (DataLimite, PrecoInicial, BidFee, Estado, GrauDeDegradacao, Descricao, VendedorId, Categoria, MaiorLicitacao, Titulo)
+    VALUES
+        ('2024-02-21 17:21:00.000', 150.00, 7.50, 'Aceite', 10, 'Original card of the dragon ball super deck', 1, 'Dragon Ball Super', null, 'Son Goku'),
+        ('2024-02-14 17:22:00.000', 35.00, 1.75, 'Aceite', 7, 'Original card of the one piece deck', 1, 'One piece', null, 'Monkey D. Luffy'),
+        ('2024-01-30 22:24:00.000', 230.00, 11.50, 'Aceite', 10, 'Official first edition Lebron James rookie season card', 2, 'Basquetebol', null, 'Lebron James'),
+        ('2024-01-30 18:30:00.000', 355.00, 17.75, 'Aceite', 9, 'Almost perfect first edition Charizard VMax', 2, 'Pokemon', null, 'Charizard VMax'),
+        ('2024-01-30 19:30:00.000', 450.00, 22.50, 'Aceite', 10, 'First edition Dark Magician card from the original Deck', 3, 'Yu-Gi-Oh!', null, 'Dark Magician'),
+        ('2024-01-30 21:00:00.000', 2500.00, 125.00, 'Aceite', 9, 'There is only one copy of this card in the entire world. The first edition limited card from the collaboration between Magic: The Gathering and Lord of the Rings.', 3, 'Magic: The Gathering', null, 'Lord of the Rings - The One Ring');
+END
+
+IF NOT EXISTS (SELECT 1 FROM Fotos)
+BEGIN
+    INSERT INTO Fotos (Foto, LeilaoId)
+    VALUES
+        ('Images/8755de31-f032-410a-be27-c1e92a8ac854..png', 1),
+        ('Images/784a6c57-23f4-44ec-8b9b-6ca49446be16..png', 2),
+        ('Images/d294a892-74ea-4f17-bf47-3963717309e9..jpg', 3),
+        ('Images/080e285a-a193-4d0b-8580-cc449be45394..png', 4),
+        ('Images/5d73bc3d-32c0-43aa-ac62-83cd4c8e66ac..jpg', 5),
+        ('Images/b345533a-1607-48de-895a-1c8c96e3f9cd..png', 6);
+END
