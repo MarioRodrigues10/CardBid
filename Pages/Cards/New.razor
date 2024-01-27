@@ -51,15 +51,22 @@
             <p>@(listingPrice - bidFee) €</p>
         </div>
         <button @onclick="RegisterAuction" class="bg-blue-500 text-white px-4 py-2 rounded w-96">Complete Listing</button>
-        @if (!string.IsNullOrEmpty(ErrorMessage))
+        @if (!string.IsNullOrEmpty(ErrorMessage) || !string.IsNullOrEmpty(ErrorMessageType))
         {
-            <p class="text-red-500">@ErrorMessage</p>
+            @if (!string.IsNullOrEmpty(ErrorMessageType))
+            {
+                <p class="text-red-500 text-center">@ErrorMessageType</p>
+            }
+            else
+            {
+                <p class="text-red-500 text-center">@ErrorMessage</p>
+            }
         }
     </div>
 </div>
 <div class="bg-red h-full w-50" style="cursor: pointer">
     <InputFile @ref="fileInput" OnChange="HandleFileSelected" />
-    <img src="@ImageSource" alt="Selected Image" style="max-width: 100%; max-height: 100%;" />
+    <img src="@ImageSource" alt="Selected Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" />
 </div>
 </div>
 
@@ -76,8 +83,10 @@
     private string Level;
     private string Collection;
     private string ErrorMessage;
+    private string ErrorMessageType;
     private string ImageSource;
     private InputFile fileInput;
+    private List<string> allowedExtensions = new List<string> { "image/png", "image/jpeg", "image/jpg" };
 
     private bool isValid => !string.IsNullOrEmpty(Title)
         && !string.IsNullOrEmpty(Description)
@@ -140,17 +149,28 @@
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-        string type = file.ContentType;
         if (file != null)
         {
-            var imageFile = await file.RequestImageFileAsync(type, 100, 100);
-            var buffer = new byte[imageFile.Size];
-            await imageFile.OpenReadStream().ReadAsync(buffer);
-            var filename = $"{Guid.NewGuid()}.{type.Substring(6)}";
-            var imagePath = $"wwwroot/Images/{filename}";
-            await File.WriteAllBytesAsync(imagePath, buffer);
+            string contentType = file.ContentType?.ToLowerInvariant();
 
-            ImageSource = imagePath.Substring(8);
+            if (string.IsNullOrEmpty(contentType) || !allowedExtensions.Contains(contentType))
+            {
+                ErrorMessageType = "Invalid file type. Please select a valid image file.";
+                return;
+            }
+            else
+            {
+                string extension = Path.GetExtension(file.Name);
+                var filename = $"{Guid.NewGuid()}.{extension}";
+                var imagePath = $"wwwroot/Images/{filename}";
+            
+                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await file.OpenReadStream(5*1024*1024).CopyToAsync(fileStream);
+                }
+
+                ImageSource = imagePath.Substring(8);
+            }
         }
     }
 }
