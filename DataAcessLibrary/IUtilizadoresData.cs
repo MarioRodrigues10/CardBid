@@ -6,5 +6,7 @@ namespace CardBid.DataAcessLibrary
         Task<Utilizadores> AddUtilizador(Utilizadores utilizador);
 
         Task<string> GetNome(int id);
+
+        Task<int> GetIdByEmail(string Email);
     }
 }

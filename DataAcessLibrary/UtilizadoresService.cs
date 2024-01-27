@@ -56,5 +56,15 @@ namespace CardBid.DataAcessLibrary
             var utilizador = await _db.Utilizadores.FindAsync(id);
             return utilizador.Nome;
         }
+
+        public async Task<int> GetIdByEmail(string Email)
+        {
+            var utilizador = await _db.Utilizadores.FirstOrDefaultAsync(u => u.Email == Email);
+            if (utilizador != null)
+            {
+                return utilizador.Id;
+            }
+            throw new EmailException("Email not found!");
+        }
     }
 }

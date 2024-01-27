@@ -74,6 +74,15 @@ namespace CardBid.DataAcessLibrary
             return user;
         }
 
+        public async Task<Conta> UpdatePass(int Id, string newPass)
+        {
+            var conta = await _db.Conta.Where(c => c.UtilizadorId == Id).SingleAsync();
+            conta.PalavraPasse = newPass;
+            await _db.SaveChangesAsync();
+            _db.ChangeTracker.Clear();
+            return conta;
+        }
+
         public string getUsername(int id)
         {
             Conta conta = _db.Conta.Where(c => c.UtilizadorId == id).Single();
