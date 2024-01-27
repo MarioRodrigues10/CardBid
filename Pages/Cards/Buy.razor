@@ -3,6 +3,7 @@
 @using CardBid.DataAcessLibrary
 @using System.Globalization
 @using Blazored.LocalStorage
+@inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 @inject ILeiloesData LeiloesService
 @inject ILicitacoesData LicitacoesService
@@ -77,6 +78,12 @@
             Error = "Bid must be higher than the current price";
         }
     }
+
+    private void NavigateToSellerProfile()
+    {
+        string username = ContaService.getUsername(l.VendedorId);
+        NavigationManager.NavigateTo($"/profile/{username}/{l.VendedorId}");
+    }
 }
 
 <div class="min-h-screen h-fit">
@@ -96,7 +103,7 @@
     </div>
     <div class="flex flex-col justify-center px-8 py-8 mx-8">
         <h1 class="font-bold text-3xl py-2">Card Name: <span class="text-red-600">@l.Titulo</span></h1>
-        <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600">@ContaService.getUsername(l.VendedorId)</span></h2>
+        <h2 class="font-bold text-2xl py-2">Owned by:  <span class="text-blue-600" @onclick="NavigateToSellerProfile" >@ContaService.getUsername(l.VendedorId)</span></h2>
         <h2 class="font-bold text-1xl py-2">Description:  <span class="text-blue-600">@l.Descricao</span></h2>
     </div>
     <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 mb-8">

@@ -117,6 +117,12 @@
             break;
         }
     }
+
+    private void NavigateToSellerProfile(int sellerId)
+    {
+        string username = usernames[sellerId];
+        NavigationManager.NavigateTo($"/profile/{username}/{sellerId}");
+    }
 }
 
 <div class="min-h-screen h-full flex flex-col">
@@ -208,7 +214,7 @@
                     <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
                         <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full"/>
                         <div class="flex flex-col bg-white p-4">
-                            <span class="text-xl font-bold">Seller: @usernames[currentLeilao.VendedorId]</span>
+                            <span class="text-xl font-bold" @onclick="() => NavigateToSellerProfile(currentLeilao.VendedorId)" >Seller: @usernames[currentLeilao.VendedorId]</span>
                             <span class="text-xl font-bold">Card: @currentLeilao.Titulo</span>
                             <span class="text-xl font-bold">Auction Time Limit: @currentLeilao.DataLimite.ToString("MM/dd - HH:mm")</span>
                         </div>
