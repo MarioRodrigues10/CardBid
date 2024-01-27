@@ -51,19 +51,22 @@
             <p>@(listingPrice - bidFee) €</p>
         </div>
         <button @onclick="RegisterAuction" class="bg-blue-500 text-white px-4 py-2 rounded w-96">Complete Listing</button>
-        @if (!string.IsNullOrEmpty(ErrorMessage))
+        @if (!string.IsNullOrEmpty(ErrorMessage) || !string.IsNullOrEmpty(ErrorMessageType))
         {
-            <p class="text-red-500">@ErrorMessage</p>
+            @if (!string.IsNullOrEmpty(ErrorMessageType))
+            {
+                <p class="text-red-500 text-center">@ErrorMessageType</p>
+            }
+            else
+            {
+                <p class="text-red-500 text-center">@ErrorMessage</p>
+            }
         }
     </div>
 </div>
 <div class="bg-red h-full w-50" style="cursor: pointer">
     <InputFile @ref="fileInput" OnChange="HandleFileSelected" />
     <img src="@ImageSource" alt="Selected Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" />
-    @if (string.IsNullOrEmpty(ErrorMessageType))
-    {
-        <p class="text-white text-center">@ErrorMessageType</p>
-    }
 </div>
 </div>
 
@@ -168,7 +171,6 @@
 
                 ImageSource = imagePath.Substring(8);
             }
-            
         }
     }
 }
