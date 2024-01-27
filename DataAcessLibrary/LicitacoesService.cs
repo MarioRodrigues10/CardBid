@@ -45,19 +45,20 @@ namespace CardBid.DataAcessLibrary
             return licitacoes;
         }
 
-        public async Task<List<decimal>> GetLicitacoesValor(List<Leiloes> userLeiloes)
+        public async Task<Dictionary<int,decimal>> GetLicitacoesValor(List<Leiloes> userLeiloes)
         {
-            var licitacoes = new List<decimal>();
+            var licitacoes = new Dictionary<int, decimal>();
+
             foreach (var leilao in userLeiloes)
             {
-                var licitacao = await _db.Licitacoes.Where(l => l.LeilaoId == leilao.Id).OrderBy(l => l.Valor).FirstOrDefaultAsync();
-                if (licitacao != null)
+                if (leilao.MaiorLicitacao != null)
                 {
-                    licitacoes.Add(licitacao.Valor);
+                    var licitacao = await _db.Licitacoes.FindAsync(leilao.MaiorLicitacao);
+                    licitacoes.Add(leilao.Id, licitacao.Valor);
                 }
                 else
                 {
-                    licitacoes.Add(leilao.PrecoInicial);
+                    licitacoes.Add(leilao.Id, leilao.PrecoInicial);
                 }
             }
             return licitacoes;

@@ -18,7 +18,8 @@
     int totalCards => userLeiloes.Count;
     string selectedButton = "Created";
     string currentSortOption = "Price Low to High";
-    List<decimal> userLicitacoesValor = new List<decimal>();
+    Dictionary<int,decimal> userLicitacoesValor = new Dictionary<int, decimal>();
+    Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
 
     private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
@@ -49,7 +50,18 @@
 
     <!-- Header Section -->
     <div class="w-full h-64 bg-gray-200"></div>
-    <div class="w-64 h-64 bg-gray-200 rounded-full absolute -mt-32 ml-4 border-4 border-black"></div>
+    <div class="w-56 h-56 bg-gray-200 rounded-full absolute -mt-32 ml-8 border-4 border-black flex items-center justify-center">
+        <style>
+            img {
+                max-height: 100%;
+                max-width: 100%;
+                width: auto;
+                height: auto;
+                object-fit: cover;
+            }
+        </style>
+        <img src="UserIcon.png" alt="usericon"/>
+    </div>
     <div class="ml-80 w-full mt-4">
         <h1 class="text-3xl font-bold">@nome</h1>
         <p class="text-xl">@username</p>
@@ -80,7 +92,16 @@
             .Take(pageSize))
         {
             <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
-                <img src="https://placehold.co/100x100" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
+                <style>
+                    img {
+                        display: block;
+                        max-width: 380px;
+                        max-height: 380px;
+                        width: auto;
+                        height: auto;
+                    }
+                </style>
+                <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
                 <div class="flex flex-col bg-white p-4">
                     <span class="text-xl font-bold">Seller: @leilao.VendedorId</span>
                     <span class="text-xl font-bold">Card: @leilao.Titulo</span>
@@ -105,11 +126,13 @@
         switch(currentSortOption){
             case "Price Low to High":
                 userLicitacoesValor =  await LicitacoesService.GetLicitacoesValor(userLeiloes);
-                userLeiloes = userLeiloes.OrderBy(l => userLicitacoesValor[userLeiloes.IndexOf(l)]).ToList();
+                userLeiloes = userLeiloes.OrderBy(l => userLicitacoesValor[l.Id]).ToList();
+                fotos = FotosService.ListAllbyLeilao(userLeiloes.Select(l => l.Id).ToArray());
                 break;
             case "Price High to Low":
                 userLicitacoesValor = await LicitacoesService.GetLicitacoesValor(userLeiloes);
-                userLeiloes = userLeiloes.OrderByDescending(l => userLicitacoesValor[userLeiloes.IndexOf(l)]).ToList();
+                userLeiloes = userLeiloes.OrderByDescending(l => userLicitacoesValor[l.Id]).ToList();
+                fotos = FotosService.ListAllbyLeilao(userLeiloes.Select(l => l.Id).ToArray());
                 break;
             case "Level":
                 userLeiloes = userLeiloes.OrderBy(l => l.GrauDeDegradacao).ToList();
