@@ -50,6 +50,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29tcGxldGVMaXN0aW5nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/mario/CardBid/Pages/EditProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRWRpdFByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/mario/CardBid/Pages/ForgotPassword.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRm9yZ290UGFzc3dvcmQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,6 +78,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/mario/CardBid/Pages/RestorePassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVzdG9yZVBhc3N3b3JkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/mario/CardBid/Shared/EmptyLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0VtcHR5TGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -84,6 +92,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/mario/CardBid/Shared/Navbar.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdmJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mario/CardBid/Shared/NavbarAdmin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdmJhckFkbWluLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mario/CardBid/Shared/NavbarLoggedIn.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdmJhckxvZ2dlZEluLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/mario/CardBid/_Imports.razor]

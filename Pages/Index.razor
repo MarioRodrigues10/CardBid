@@ -13,30 +13,26 @@
             </div>
         </div>
 
-        <div class="flex flex-col bg-gray-400 w-full border-l-2 border-b-2 border-black">
-            <div class="flex flex-end justify-end h-2/3 bg-gray-400">
-                <img src="" class="max-h-full">
+        <div class="flex flex-col w-full bg-gray-200">
+            <div class="flex justify-center items-center h-4/5">
+                <img src="@currentImagePath" class="max-h-full min-w-full">
             </div>
-            <div class="flex flex-col justify-start h-fit bg-gray-200 px-2">
-                <h1 class="font-bold text-2xl pb-2 w-fit">Card Bid</h1>
-                <div class="flex flex-row justify-between">
+            <div class="flex flex-col justify-start bg-gray-200 px-2">
+                <h1 class="font-bold text-3xl pb-2 w-fit">Card Bid</h1>
+                <div class="flex flex-row justify-between mt-4">
                     <div class="flex flex-row">
-                        <button class="bg-black h-8 w-8 rounded-full ml-2"></button>
-                        <button class="bg-gray-400 h-8 w-8 rounded-full ml-2"></button>
-                        <button class="bg-gray-400 h-8 w-8 rounded-full ml-2"></button>
-                    </div>
-                    <div class="flex flex-row px-4">
-                        <button class="bg-gray-400 border-black border h-16 w-16 rounded-full ml-2"></button>
-                        <button class="bg-gray-400 border-black border h-16 w-16 rounded-full ml-2"></button>
+                        <button class="bg-gray-400 h-8 w-8 rounded-full ml-2" @onclick = "ChangeImage1"></button>
+                        <button class="bg-gray-400 h-8 w-8 rounded-full ml-2" @onclick = "ChangeImage2"></button>
+                        <button class="bg-gray-400 h-8 w-8 rounded-full ml-2" @onclick = "ChangeImage3"></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="flex w-full py-8 h-fit items-center justify-center">
+    <div class="flex w-full py-8 h-fit items-center justify-center mt-12">
         <div class="px-2 flex flex-col items-center">
-            <img src="" alt="emoji" />
+            <img src="Images/cubo.png" alt="emoji" />
             <h2 class="font-bold text-2xl">Discover How Our Cards Auctions Works</h2>
             <p>At our auctions, you can bide a wide variety of collectible cards from different categories and eras.</p>
             <div class="flex flex-row py-4">
@@ -45,7 +41,7 @@
             </div>
         </div>
         <div class="w-fit px-2 flex flex-col items-center">
-            <img src="" alt="emoji" />
+            <img src="Images/cubo.png" alt="emoji" />
             <h2 class="font-bold text-2xl">Secure your Favorite Cards with Ease</h2>
             <p class="w-fit break-normal">Once you win an auction, you can securily complete your purchase and have the cards delivered to your doorstep.</p>
             <div class="py-4">
@@ -55,9 +51,9 @@
     </div>
 
     <div class="flex flex-row h-fit w-screen py-8 px-8">
-        <div class="flex flex-col bg-gray-400 w-1/2 p-2">
+        <div class="flex flex-col w-1/2 p-2">
             <div class="flex flex-end justify-end w-full h-96 bg-gray-400">
-                <img src="" class="max-h-full">
+                <img src="Images/cards4.jpg" class="max-h-full min-w-full">
             </div>
         </div>
         <div class="flex flex-col justify-center items-center p-4 w-1/2">
@@ -77,8 +73,8 @@
         </div>
 
         <div class="flex flex-col bg-gray-400 w-full">
-            <div class="flex flex-end justify-end w-full h-52 bg-gray-400">
-                <img src="" class="max-h-full">
+            <div class="flex flex-end justify-end w-full h-64 bg-gray-400">
+<img src="https://www.kindpng.com/picc/m/65-659815_magic-cards-png-transparent-png.png" class="max-h-full min-w-full">
             </div>
         </div>
     </div>
@@ -104,5 +100,25 @@ private void NavigateToCards()
     {
         NavigationManager.NavigateTo("/cards");
     }
+
+private string currentImagePath = "Images/cards1.jpg";
+private string[] imagePaths = new string[] {"Images/cards1.jpg", "Images/cards2.jpg", "Images/cards3.jpg" };
+
+private void ChangeImage1()
+{
+    currentImagePath = imagePaths[0];
+}
+
+private void ChangeImage2()
+{
+
+    currentImagePath = imagePaths[1];
+}
+
+private void ChangeImage3()
+{
+    currentImagePath = imagePaths[2];
+}
+
 }
 
