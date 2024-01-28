@@ -99,7 +99,7 @@
                 </style>
                 <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
                 <div class="flex flex-col bg-white p-4">
-                    <span class="text-xl font-bold">Seller: @leilao.VendedorId</span>
+                    <span class="text-xl font-bold">Seller: @username</span>
                     <span class="text-xl font-bold">Card: @leilao.Titulo</span>
                     <span class="text-xl font-bold">Auction Time Limit: @leilao.DataLimite</span>
                 </div>
