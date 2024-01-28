@@ -36,7 +36,7 @@ public class LeiloesBackgroundService : BackgroundService
                         {
                             CompradorId = licitacao.LicitanteId,
                             LeilaoId = a.Id,
-                            Fatura = $"Leilão Nº{a.Id}: {a.Titulo}\n Licitação Nº{licitacao.Id}\n Valor = {licitacao.Valor}"
+                            Fatura = $"Auction Nº{a.Id}: {a.Titulo}\n Bid Nº{licitacao.Id}\n Value = {licitacao.Valor}"
                         };
 
                         dbContext.Faturas.Add(faturas);

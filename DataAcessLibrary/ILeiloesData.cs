@@ -22,7 +22,9 @@ namespace CardBid.DataAcessLibrary
 
         public Leiloes getLeiloes(int id);
 
-        public Task<List<Leiloes>> GetCreatedLeiloes(int id);
+        public List<Leiloes> GetCreatedLeiloes(int id);
+
+        public Task<List<Leiloes>> GetCreatedLeiloesAsync(int id);
 
         public Task<List<Leiloes>> GetCollectedLeiloes(int id);
 

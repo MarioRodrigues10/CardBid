@@ -71,7 +71,7 @@
         Allleiloes = LeiloesService.ListAllAccepted();
         int[] ids = Allleiloes.Keys.ToArray();
         fotos = FotosService.ListAllbyLeilao(ids);
-        usernames = ContaService.getAllUsernames(Allleiloes.Select(l => l.Value.VendedorId).ToList());
+        usernames = ContaService.getAllUsernames(Allleiloes.Select(l => l.Value.VendedorId).ToArray());
         collections = CategoriaService.GetCategorias();
         levels = GrauDegradacaoService.GetGrausDegradacao();
 

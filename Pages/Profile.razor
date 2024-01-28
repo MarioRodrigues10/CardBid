@@ -7,6 +7,7 @@
 @inject ILeiloesData LeiloesService
 @inject IFaturaData FaturasService
 @inject IUtilizadoresData UtilizadoresService
+@inject IContaData ContaService
 @inject NavigationManager NavigationManager
 @inject IFotosData FotosService
 @inject ILicitacoesData LicitacoesService
@@ -22,8 +23,10 @@
     Dictionary<int,decimal> userLicitacoesValor = new Dictionary<int, decimal>();
     Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
     Dictionary<int, Faturas> faturas = new Dictionary<int, Faturas>();
+    Dictionary<int, string> usernames = new Dictionary<int, string>();
     int? currentId;
     bool showFatura => selectedButton == "Collected" && currentId == id;
+    int faturaSelected = -1;
 
     private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
@@ -41,12 +44,18 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        userLeiloes = LeiloesService.GetCreatedLeiloes(id);
+        fotos = FotosService.ListAllbyLeilao(userLeiloes.Select(l => l.Id).ToArray());
+        usernames = ContaService.getAllUsernames(userLeiloes.Select(l => l.VendedorId).ToArray());
+        userLicitacoesValor = LicitacoesService.GetLicitacoesValor(userLeiloes);
+        userLeiloes = userLeiloes.OrderBy(l => userLicitacoesValor[l.Id]).ToList();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         nome = await UtilizadoresService.GetNome(id);
-        
-        userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
-        await SortLeiloes();
         currentId = await LocalStorage.GetItemAsync<int?>("id");
     }
 }
@@ -83,27 +92,35 @@
     <!-- Card Section -->
     <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
         @foreach (var leilao in userLeiloes
-            .Where(l => string.IsNullOrWhiteSpace(searchTerm) || l.Titulo.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize))
+                    .Where(l => string.IsNullOrWhiteSpace(searchTerm) || l.Titulo.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize))
         {
             <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
                 <style>
                     img {
-                        display: block;
-                        max-width: 380px;
-                        max-height: 380px;
-                        width: auto;
-                        height: auto;
+                    display: block;
+                    max-width: 380px;
+                    max-height: 380px;
+                    width: auto;
+                    height: auto;
                     }
                 </style>
                 <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
                 <div class="flex flex-col bg-white p-4">
-                    <span class="text-xl font-bold">Seller: @username</span>
+                    <span class="text-xl font-bold">Seller: @usernames[leilao.VendedorId]</span>
                     <span class="text-xl font-bold">Card: @leilao.Titulo</span>
                     <span class="text-xl font-bold">Auction Time Limit: @leilao.DataLimite</span>
                 </div>
+
+                @if (showFatura)
+                {
+                    <div class="bg-white p-4 flex justify-center items-center">
+                        <button class="bg-blue-500 text-white px-4 py-1 rounded" @onclick="() => ToggleBill(leilao.Id)">Show Bill</button>
+                    </div>
+                }
             </div>
+
         }
     </div>
 
@@ -113,6 +130,25 @@
         <span class="mx-4">Page @currentPage of @TotalPages</span>
         <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage + 1)">Next</button>
     </div>
+
+    <!-- Bill Section -->
+    @{
+        if(faturaSelected > 0 && showFatura)
+        {
+            Faturas f = faturas[faturaSelected];
+            string[] discription = f.Fatura.Split("\n");
+            <div class="flex flex-col justify-center px-8 py-8 border-black border-2 rounded-xl mx-16 mb-8">
+                <h1 class="font-bold text-xl py-2 border-b-2 border-black text-black">Bill Nº @f.Id</h1>
+                <div class="flex flex-col bg-white p-4 ">
+                    <span class="text-xl font-bold">Description: </span>
+                    @foreach (string s in discription)
+                    {
+                        <span class="text-xl ml-8">@s</span>
+                    }
+                </div>
+            </div>
+        }
+    }
 </div>
 
 @code{
@@ -121,15 +157,15 @@
     private async Task SortLeiloes(){
         switch(currentSortOption){
             case "Price Low to High":
-                userLicitacoesValor =  await LicitacoesService.GetLicitacoesValor(userLeiloes);
+                userLicitacoesValor =  await LicitacoesService.GetLicitacoesValorAsync(userLeiloes);
                 userLeiloes = userLeiloes.OrderBy(l => userLicitacoesValor[l.Id]).ToList();
-                fotos = FotosService.ListAllbyLeilao(userLeiloes.Select(l => l.Id).ToArray());
                 break;
+
             case "Price High to Low":
-                userLicitacoesValor = await LicitacoesService.GetLicitacoesValor(userLeiloes);
+                userLicitacoesValor = await LicitacoesService.GetLicitacoesValorAsync(userLeiloes);
                 userLeiloes = userLeiloes.OrderByDescending(l => userLicitacoesValor[l.Id]).ToList();
-                fotos = FotosService.ListAllbyLeilao(userLeiloes.Select(l => l.Id).ToArray());
                 break;
+
             case "Level":
                 userLeiloes = userLeiloes.OrderBy(l => l.GrauDeDegradacao).ToList();
                 break;
@@ -143,19 +179,36 @@
         await SortLeiloes();
     }
 
+    private async Task getFotos()
+    {
+        int[] ids = userLeiloes.Select(l => l.Id).ToArray();
+        fotos = await FotosService.ListAllbyLeilaoAsync(ids);
+    }
+
+    private async Task getUsernames()
+    {
+        int[] ids = userLeiloes.Select(l => l.VendedorId).ToArray();
+        usernames = await ContaService.getAllUsernamesAsync(ids);
+    }
+
     private async Task FetchCreatedLeiloes()
     {
         selectedButton = "Created";
-        userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
+        userLeiloes = await LeiloesService.GetCreatedLeiloesAsync(id);
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
 
     private async Task FetchCollectedLeiloes()
     {
+        faturaSelected = -1;
         selectedButton = "Collected";
         userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
         faturas = await FaturasService.GetFaturas(id);
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
@@ -163,6 +216,8 @@
     {
         selectedButton = "Offers Made";
         userLeiloes = await LeiloesService.GetOffersMadeLeiloes(id);
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
@@ -170,11 +225,19 @@
     {
         selectedButton = "Deals";
         userLeiloes = await LeiloesService.GetDealsLeiloes(id);
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
     private void ShowCard(int id)
     {
         NavigationManager.NavigateTo($"/cards/buy/{id}");
+    }
+
+    private void ToggleBill(int id)
+    {
+        faturaSelected = id;
+        StateHasChanged();
     }
 }
