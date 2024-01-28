@@ -5,6 +5,7 @@
 @using Blazored.LocalStorage
 @inject ILocalStorageService LocalStorage
 @inject ILeiloesData LeiloesService
+@inject IFaturaData FaturasService
 @inject IUtilizadoresData UtilizadoresService
 @inject NavigationManager NavigationManager
 @inject IFotosData FotosService
@@ -20,6 +21,9 @@
     string currentSortOption = "Price Low to High";
     Dictionary<int,decimal> userLicitacoesValor = new Dictionary<int, decimal>();
     Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
+    Dictionary<int, Faturas> faturas = new Dictionary<int, Faturas>();
+    int? currentId;
+    bool showFatura => selectedButton == "Collected" && currentId == id;
 
     private int TotalPages => totalCards == 0 ? 1 : (int)Math.Ceiling((double)totalCards / pageSize);
 
@@ -40,9 +44,10 @@
     protected override async Task OnInitializedAsync()
     {
         nome = await UtilizadoresService.GetNome(id);
-
+        
         userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
         await SortLeiloes();
+        currentId = await LocalStorage.GetItemAsync<int?>("id");
     }
 }
 
@@ -51,16 +56,7 @@
     <!-- Header Section -->
     <div class="w-full h-64 bg-gray-200"></div>
     <div class="w-56 h-56 bg-gray-200 rounded-full absolute -mt-32 ml-8 border-4 border-black flex items-center justify-center">
-        <style>
-            img {
-                max-height: 100%;
-                max-width: 100%;
-                width: auto;
-                height: auto;
-                object-fit: cover;
-            }
-        </style>
-        <img src="UserIcon.png" alt="usericon"/>
+        <img style="display: block; max-height: 380px; max-width: 380px; width: auto; height: auto; object-fit: cover;" src="UserIcon.png" alt="usericon"/>
     </div>
     <div class="ml-80 w-full mt-4">
         <h1 class="text-3xl font-bold">@nome</h1>
@@ -159,6 +155,7 @@
     {
         selectedButton = "Collected";
         userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
+        faturas = await FaturasService.GetFaturas(id);
         await SortLeiloes();
     }
 

@@ -11,9 +11,9 @@ namespace CardBid.DataAcessLibrary
         {
             _db = db;
         }
-        public async Task<List<Faturas>> GetFaturasComprador(int id)
+        public async Task<Dictionary<int,Faturas>> GetFaturas(int id)
         {
-            List<Faturas> l = await _db.Faturas.Where(f => f.CompradorId == id).ToListAsync();
+            Dictionary<int, Faturas> l = await _db.Faturas.Where(f => f.CompradorId == id).ToDictionaryAsync(f => f.LeilaoId, f => f);
             return l;
         }
 

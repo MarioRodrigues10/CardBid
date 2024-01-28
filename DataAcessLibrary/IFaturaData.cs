@@ -4,7 +4,7 @@ namespace CardBid.DataAcessLibrary
 {
     public interface IFaturaData
     {
-        public Task<List<Faturas>> GetFaturasComprador(int id);
+        public Task<Dictionary<int, Faturas>> GetFaturas(int id);
 
         public Task<Faturas> RegisterFatura(Faturas fatura);
     }
