@@ -13,7 +13,7 @@
         <img src="UserIcon.png" alt="User Icon" class="cursor-pointer w-20 h-auto rounded-full" @onclick="ToggleUserOptions" />
         @if (showUserOptions)
         {
-            <div class="absolute z-50 mt-2 bg-white border rounded-md shadow-lg">
+            <div class="absolute z-100 mt-2 bg-white border rounded-md shadow-lg">
                 <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="NavigateToProfile">Go to Profile</button>
                 <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="EditAccount">Edit Account</button>
                 <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="SignOut">Sign Out</button>
@@ -43,7 +43,7 @@
         {
             NavigationManager.NavigateTo("/login");
         }
-    } 
+    }
 
     private void NavigateToHomePage()
     {

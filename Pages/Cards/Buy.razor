@@ -3,6 +3,7 @@
 @using CardBid.DataAcessLibrary
 @using System.Globalization
 @using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Web
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 @inject ILeiloesData LeiloesService
@@ -84,6 +85,12 @@
         string username = ContaService.getUsername(l.VendedorId);
         NavigationManager.NavigateTo($"/profile/{username}/{l.VendedorId}");
     }
+
+    private void NavigateToBidder(int bidderId, MouseEventArgs e)
+    {
+        string username = ContaService.getUsername(bidderId);
+        NavigationManager.NavigateTo($"/profile/{username}/{bidderId}");
+    }
 }
 
 <div class="min-h-screen h-fit">
@@ -138,7 +145,7 @@
                     <span class="text-md">@licitacao.Valor.ToString("N2", culturept)€</span>
                     <span class="text-md">@(Math.Round(((licitacao.Valor - l.PrecoInicial) / l.PrecoInicial) *100, 2))%</span>
                     <span class="text-md">@licitacao.Data.ToString("dd MMMM, yyyy: HH:mm",culture)</span>
-                    <span class="text-md">@ContaService.getUsername(licitacao.LicitanteId)</span>
+                    <span class="text-md" @onclick="@(e => NavigateToBidder(licitacao.LicitanteId, e))">@ContaService.getUsername(licitacao.LicitanteId)</span>
                 </div>
             }
         </div>
