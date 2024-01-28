@@ -14,6 +14,8 @@ namespace CardBid.DataAcessLibrary
 
         public Task<List<Licitacoes>> getLicitacoesPerComprador(int id);
 
-        public Task<Dictionary<int,decimal>> GetLicitacoesValor(List<Leiloes> ids);
+        public Dictionary<int,decimal> GetLicitacoesValor(List<Leiloes> ids);
+
+        public Task<Dictionary<int,decimal>> GetLicitacoesValorAsync(List<Leiloes> ids);
     }
 }

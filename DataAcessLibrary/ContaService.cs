@@ -89,11 +89,20 @@ namespace CardBid.DataAcessLibrary
             return conta.NomeUtilizador;
         }
 
-        public Dictionary<int, string> getAllUsernames(List<int> ids)
+        public Dictionary<int, string> getAllUsernames(int[] ids)
         {
             var utilizadores = _db.Conta
                 .Where(c => ids.Contains(c.UtilizadorId.GetValueOrDefault()))
                 .ToDictionary(c => c.UtilizadorId.GetValueOrDefault(), c => c.NomeUtilizador);
+
+            return utilizadores;
+        }
+
+        public async Task<Dictionary<int, string>> getAllUsernamesAsync(int[] ids)
+        {
+            var utilizadores = await _db.Conta
+                .Where(c => ids.Contains(c.UtilizadorId.GetValueOrDefault()))
+                .ToDictionaryAsync(c => c.UtilizadorId.GetValueOrDefault(), c => c.NomeUtilizador);
 
             return utilizadores;
         }
