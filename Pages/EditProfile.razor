@@ -1,0 +1,322 @@
+@page "/editprofile/{id:int}"
+@using CardBid.Data
+@using CardBid.Data.Models
+@using CardBid.DataAcessLibrary
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
+@inject IUtilizadoresData UtilizadoresService
+@inject NavigationManager NavigationManager
+@inject IContaData ContaService
+
+<style>
+    .non-editable {
+        background-color: #a9a9a9 !important;
+        cursor: not-allowed;
+
+    .edit-button {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    }
+</style>
+
+<div class="flex flex-col justify-center py-4 items-center h-fit min-h-screen">
+    <h1 class="font-bold text-3xl py-2">Edit Profile</h1>
+    <div class="flex flex-col space-y-4 w-96">
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="email">Email Address:</label>
+            @if (editModes.ContainsKey("Email"))
+            {
+                <input type="text" placeholder="Email Address" @bind="Email" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="text" placeholder="Email Address" value="@Email" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditEmail">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="username">Username:</label>
+            <input type="text" placeholder="Username" value="@NomeUtilizador" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            <span class="text-gray-500">The username cannot be changed.</span>
+        </div>
+
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="password">Password:</label>
+            @if (editModes.ContainsKey("PalavraPasse"))
+            {
+                <input type="password" placeholder="Password" @bind="PalavraPasse" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="password" placeholder="Password" value="@PalavraPasse" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditPassword">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="name">Name:</label>
+            @if (editModes.ContainsKey("Nome"))
+            {
+                <input type="text" placeholder="Name" @bind="Nome" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="text" placeholder="Name" value="@Nome" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditName">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="birthday">Birthday:</label>
+            @if (editModes.ContainsKey("DataDeNascimento"))
+            {
+                <input type="date" @bind="DataDeNascimento" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="date" value="@DataDeNascimento.ToString("yyyy-MM-dd")" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditBirthDay">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="sex">Sex:</label>
+            @if (editModes.ContainsKey("Genero"))
+            {
+                <select @bind="Genero" class="border-black bg-white border-2 px-4 py-2 rounded">
+                    <option value="NotDisclosed">Not Disclosed</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            }
+            else
+            {
+                <select value="@Genero" class="border-black bg-white border-2 px-4 py-2 rounded non-editable" readonly disabled>
+                    <option value="NotDisclosed">Not Disclosed</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditSex">Edit</button>
+            }
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="address">Address:</label>
+            @if (editModes.ContainsKey("Morada"))
+            {
+                <input type="text" placeholder="Address" @bind="Morada" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="text" placeholder="Address" value="@Morada" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditAddress">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="phoneNumber">Phone Number:</label>
+            @if (editModes.ContainsKey("Telefone"))
+            {
+                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" pattern="[0-9]*" placeholder="Phone Number" @bind="Telefone" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" pattern="[0-9]*" value="@Telefone" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditPhoneNumber">Edit</button>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+            <label class="font-bold" for="nif">NIF:</label>
+            @if (editModes.ContainsKey("NIF"))
+            {
+                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" pattern="[0-9]*" placeholder="NIF" @bind="NIF" class="border-black border-2 px-4 py-2 rounded" />
+            }
+            else
+            {
+                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" pattern="[0-9]*" value="@NIF" class="border-black border-2 px-4 py-2 rounded non-editable" readonly />
+            }
+            <button class="bg-blue-500 text-white px-2 py-1 rounded" @onclick="ToggleEditNIF">Edit</button>
+        </div>
+
+        <button class="bg-blue-500 text-white px-4 py-2 rounded w-full" @onclick="SaveChanges">Save Changes</button>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="text-red-500">@ErrorMessage</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private string Email { get; set; }
+    private string NomeUtilizador { get; set; }
+    private string PalavraPasse { get; set; }
+    private string Nome { get; set; }
+    private DateTime DataDeNascimento { get; set; } = DateTime.Now;
+    private string Genero { get; set; } = "NotDisclosed";
+    private string Morada { get; set; }
+    private string Telefone { get; set; }
+    private string NIF { get; set; }
+    private string ErrorMessage { get; set; }
+
+    private bool camps => string.IsNullOrEmpty(Email)
+        || string.IsNullOrEmpty(PalavraPasse) 
+        || string.IsNullOrEmpty(Nome) 
+        || string.IsNullOrEmpty(Morada) 
+        || string.IsNullOrEmpty(NomeUtilizador)
+        || string.IsNullOrEmpty(Telefone)
+        || string.IsNullOrEmpty(NIF);
+
+    private Dictionary<string, bool> editModes = new Dictionary<string, bool>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var user = await UtilizadoresService.GetUtilizadorById(id);
+            var conta = await ContaService.GetContaById(id);
+
+            if (user != null)
+            {
+                Email = user.Email;
+                Nome = user.Nome;
+                DataDeNascimento = user.DataDeNascimento;
+                Genero = user.Genero.ToString();
+                Morada = user.Morada;
+                Telefone = user.Telefone;
+                NIF = user.NIF;
+            }
+
+            if(conta != null){
+                NomeUtilizador = conta.NomeUtilizador;
+                PalavraPasse = conta.PalavraPasse;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            NavigationManager.NavigateTo("/error");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+     private void ToggleEditEmail()
+    {
+        ToggleEditMode("Email");
+    }
+
+    private void ToggleEditPassword()
+    {
+        ToggleEditMode("PalavraPasse");
+    }
+
+    private void ToggleEditName()
+    {
+        ToggleEditMode("Nome");
+    }
+
+    private void ToggleEditBirthDay()
+    {
+        ToggleEditMode("DataDeNascimento");
+    }
+
+    private void ToggleEditSex()
+    {
+        ToggleEditMode("Genero");
+    }
+
+    private void ToggleEditAddress()
+    {
+        ToggleEditMode("Morada");
+    }
+
+    private void ToggleEditPhoneNumber()
+    {
+        ToggleEditMode("Telefone");
+    }
+
+    private void ToggleEditNIF()
+    {
+        ToggleEditMode("NIF");
+    }
+
+    private void ToggleEditMode(string property)
+    {
+        if (editModes.ContainsKey(property))
+        {
+            editModes[property] = !editModes[property];
+        }
+        else
+        {
+            editModes.Add(property, true);
+        }
+    }
+
+    private async Task SaveChanges()
+    {
+        if (DataDeNascimento > DateTime.Now.AddYears(-18))
+        {
+            ErrorMessage = "You must be 18 years old!";
+            return;
+        }
+
+        if (camps)
+        {
+            ErrorMessage = "Please fill all the required fields!";
+            return;
+        }
+
+        if (NIF.Length != 9)
+        {
+            ErrorMessage = "NIF must have 9 digits!";
+            return;
+        }
+
+        if (Telefone.Length != 9)
+        {
+            ErrorMessage = "Phone Number must have 9 digits!";
+            return;
+        }
+
+        try
+        {
+            var user = await UtilizadoresService.GetUtilizadorById(id);
+            var conta = await ContaService.GetContaById(id);
+
+            if (user != null)
+            {
+                user.Email = Email;
+                user.Nome = Nome;
+                user.DataDeNascimento = DataDeNascimento;
+                user.Genero = Genero[0];
+                user.Morada = Morada;
+                user.Telefone = Telefone;
+                user.NIF = NIF;
+            }
+
+            if(conta != null)
+            {
+                conta.PalavraPasse = PalavraPasse;
+            }
+
+            await UtilizadoresService.UpdateUtilizador(user);
+            await ContaService.UpdateConta(conta);
+
+            editModes.Clear();
+
+            NavigationManager.NavigateTo($"/profile/{NomeUtilizador}/{id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

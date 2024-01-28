@@ -97,5 +97,47 @@ namespace CardBid.DataAcessLibrary
 
             return utilizadores;
         }
+
+        public async Task<Conta> GetContaById(int id)
+        {
+            var conta = await _db.Conta.Where(c => c.UtilizadorId == id).SingleAsync();
+            return conta;
+        }
+
+        public async Task UpdateConta(Conta conta)
+        {
+            try
+            {
+                _db.Entry(conta).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            finally
+            {
+                _db.ChangeTracker.Clear();
+            }
+        }
+
+        public void DetachConta(Conta conta)
+        {
+            _db.Entry(conta).State = EntityState.Detached;
+        }
+
+        public void AttachConta(Conta conta)
+        {
+            _db.Entry(conta).State = EntityState.Modified;
+        }
+
+        public async Task<bool> UsernameExists(string username)
+        {
+            var conta = await _db.Conta.FindAsync(username);
+            return conta != null;
+        }
+
+        public void DeleteConta(int id)
+        {
+            var conta = _db.Conta.Where(c => c.UtilizadorId == id).Single();
+            _db.Conta.Remove(conta);
+            _db.SaveChanges();
+        }
     }
 }

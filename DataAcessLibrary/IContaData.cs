@@ -13,5 +13,17 @@ namespace CardBid.DataAcessLibrary
         public string getUsername(int id);
 
         public Dictionary<int, string> getAllUsernames(List<int> ids);
+
+        public Task<Conta> GetContaById(int id);
+
+        public Task UpdateConta(Conta conta);
+
+        public void DetachConta(Conta conta);
+
+        public void AttachConta(Conta conta);
+
+        public Task<bool> UsernameExists(string username);
+
+        public void DeleteConta(int id);
     }
 }

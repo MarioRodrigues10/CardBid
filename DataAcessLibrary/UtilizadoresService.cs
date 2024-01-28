@@ -66,5 +66,23 @@ namespace CardBid.DataAcessLibrary
             }
             throw new EmailException("Email not found!");
         }
+
+        public async Task<Utilizadores> GetUtilizadorById(int id)
+        {
+            var utilizador = await _db.Utilizadores.FindAsync(id);
+            return utilizador;
+        }
+
+        public async Task UpdateUtilizador(Utilizadores user){
+            try
+            {
+                _db.Entry(user).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            finally
+            {
+                _db.ChangeTracker.Clear();
+            }
+        }
     }
 }

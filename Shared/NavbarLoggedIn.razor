@@ -15,6 +15,7 @@
         {
             <div class="absolute z-50 mt-2 bg-white border rounded-md shadow-lg">
                 <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="NavigateToProfile">Go to Profile</button>
+                <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="EditAccount">Edit Account</button>
                 <button class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @onclick="SignOut">Sign Out</button>
             </div>
         }
@@ -66,5 +67,11 @@
         await LocalStorage.RemoveItemAsync("username");
         NavigationManager.NavigateTo("/");
         await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+
+    private async void EditAccount()
+    {
+        int? userId = await LocalStorage.GetItemAsync<int>("id");
+        NavigationManager.NavigateTo($"/editprofile/{userId.Value}");
     }
 }
