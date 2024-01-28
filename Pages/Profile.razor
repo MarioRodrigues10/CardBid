@@ -24,6 +24,7 @@
     Dictionary<int, Fotos> fotos = new Dictionary<int, Fotos>();
     Dictionary<int, Faturas> faturas = new Dictionary<int, Faturas>();
     Dictionary<int, string> usernames = new Dictionary<int, string>();
+    bool showCards => userLeiloes.Count > 0 && userLicitacoesValor.Count > 0 && fotos.Count > 0 && usernames.Count > 0;
     int? currentId;
     bool showFatura => selectedButton == "Collected" && currentId == id;
     int faturaSelected = -1;
@@ -84,40 +85,42 @@
     </div>
     
     <!-- Card Section -->
-    <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
-        @foreach (var leilao in userLeiloes
-            .Where(l => string.IsNullOrWhiteSpace(searchTerm) || l.Titulo.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize))
-        {
-            <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
-                <style>
-                    img {
+    @if (showCards)
+    {
+        <div class="flex flex-row flex-wrap justify-center space-x-4 space-y-4 py-8">
+            @foreach (var leilao in userLeiloes
+                      .Where(l => string.IsNullOrWhiteSpace(searchTerm) || l.Titulo.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                      .Skip((currentPage - 1) * pageSize)
+                      .Take(pageSize))
+            {
+                <div class="ml-2 bg-gray-300 w-full md:w-96 border-black border-2 @((leilao == userLeiloes.First()) ? "border-t-2 mt-5" : "")">
+                    <style>
+                        img {
                         display: block;
                         max-width: 380px;
                         max-height: 380px;
                         width: auto;
                         height: auto;
+                        }
+                    </style>
+                    <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
+                    <div class="flex flex-col bg-white p-4">
+                        <span class="text-xl font-bold">Seller: @usernames[leilao.VendedorId]</span>
+                        <span class="text-xl font-bold">Card: @leilao.Titulo</span>
+                        <span class="text-xl font-bold">Auction Time Limit: @leilao.DataLimite</span>
+                    </div>
+
+                    @if (showFatura)
+                    {
+                        <div class="bg-white p-4 flex justify-center items-center">
+                            <button class="bg-blue-500 text-white px-4 py-1 rounded" @onclick="() => ToggleBill(leilao.Id)">Show Bill</button>
+                        </div>
                     }
-                </style>
-                <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
-                <div class="flex flex-col bg-white p-4">
-                    <span class="text-xl font-bold">Seller: @usernames[leilao.VendedorId]</span>
-                    <span class="text-xl font-bold">Card: @leilao.Titulo</span>
-                    <span class="text-xl font-bold">Auction Time Limit: @leilao.DataLimite</span>
                 </div>
 
-                @if(showFatura)
-                {
-                    <div class="bg-white p-4 flex justify-center items-center">
-                        <button class="bg-blue-500 text-white px-4 py-1 rounded" @onclick="() => ToggleBill(leilao.Id)">Show Bill</button>
-                    </div>
-                }
-            </div>
-
-        }
-    </div>
-
+            }
+        </div>
+    }
     <!-- Pagination Section -->
     <div class="flex justify-center items-center my-4">
         <button class="px-4 py-2 bg-gray-200" @onclick="() => ChangePage(currentPage - 1)">Previous</button>
@@ -173,24 +176,24 @@
         await SortLeiloes();
     }
 
-    private void getFotos()
+    private async Task getFotos()
     {
         int[] ids = userLeiloes.Select(l => l.Id).ToArray();
-        fotos = FotosService.ListAllbyLeilao(ids);
+        fotos = await FotosService.ListAllbyLeilaoAsync(ids);
     }
 
-    private void getUsernames()
+    private async Task getUsernames()
     {
         int[] ids = userLeiloes.Select(l => l.VendedorId).ToArray();
-        usernames = ContaService.getAllUsernames(ids);
+        usernames = await ContaService.getAllUsernamesAsync(ids);
     }
 
     private async Task FetchCreatedLeiloes()
     {
         selectedButton = "Created";
         userLeiloes = await LeiloesService.GetCreatedLeiloes(id);
-        getFotos();
-        getUsernames();
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
@@ -201,8 +204,8 @@
         selectedButton = "Collected";
         userLeiloes = await LeiloesService.GetCollectedLeiloes(id);
         faturas = await FaturasService.GetFaturas(id);
-        getFotos();
-        getUsernames();
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
@@ -210,8 +213,8 @@
     {
         selectedButton = "Offers Made";
         userLeiloes = await LeiloesService.GetOffersMadeLeiloes(id);
-        getFotos();
-        getUsernames();
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 
@@ -219,8 +222,8 @@
     {
         selectedButton = "Deals";
         userLeiloes = await LeiloesService.GetDealsLeiloes(id);
-        getFotos();
-        getUsernames();
+        await getFotos();
+        await getUsernames();
         await SortLeiloes();
     }
 

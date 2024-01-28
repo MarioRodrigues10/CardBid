@@ -14,6 +14,8 @@ namespace CardBid.DataAcessLibrary
 
         public Dictionary<int, string> getAllUsernames(int[] ids);
 
+        public Task<Dictionary<int, string>> getAllUsernamesAsync(int[] ids);
+
         public Task<Conta> GetContaById(int id);
 
         public Task UpdateConta(Conta conta);
