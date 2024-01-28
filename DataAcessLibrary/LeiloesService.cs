@@ -81,12 +81,21 @@ namespace CardBid.DataAcessLibrary
 
         // return the leiloes that the user created
 
-        public async Task<List<Leiloes>> GetCreatedLeiloes(int id)
+        public List<Leiloes> GetCreatedLeiloes(int id)
+        {
+            var leiloes = _db.Leiloes
+                .Where(l => l.VendedorId == id)
+                .ToList();
+                
+            return leiloes;
+        }
+
+        public async Task<List<Leiloes>> GetCreatedLeiloesAsync(int id)
         {
             var leiloes = await _db.Leiloes
                 .Where(l => l.VendedorId == id)
                 .ToListAsync();
-                
+
             return leiloes;
         }
 
