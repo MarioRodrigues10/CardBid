@@ -12,7 +12,7 @@ namespace CardBid.DataAcessLibrary
 
         public string getUsername(int id);
 
-        public Dictionary<int, string> getAllUsernames(List<int> ids);
+        public Dictionary<int, string> getAllUsernames(int[] ids);
 
         public Task<Conta> GetContaById(int id);
 
