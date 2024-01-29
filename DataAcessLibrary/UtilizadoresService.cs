@@ -84,5 +84,17 @@ namespace CardBid.DataAcessLibrary
                 _db.ChangeTracker.Clear();
             }
         }
+
+        public async Task<Utilizadores> GetUtilizadorByEmail(string email)
+        {
+            var utilizador = await _db.Utilizadores.FirstOrDefaultAsync(u => u.Email == email);
+            return utilizador;
+        }
+
+        public async Task<Utilizadores> GetUtilizadorByNIF(string nif)
+        {
+            var utilizador = await _db.Utilizadores.FirstOrDefaultAsync(u => u.NIF == nif);
+            return utilizador;
+        }
     }
 }

@@ -291,6 +291,28 @@
             var user = await UtilizadoresService.GetUtilizadorById(id);
             var conta = await ContaService.GetContaById(id);
 
+            //check if the email and nif in the user are still the same as the variables, if not (they were edited) check if they already exist in the database or not
+
+            if (user.Email != Email)
+            {
+                var emailExists = await UtilizadoresService.GetUtilizadorByEmail(Email);
+                if (emailExists != null)
+                {
+                    ErrorMessage = "Email already exists!";
+                    return;
+                }
+            }
+
+            if (user.NIF != NIF)
+            {
+                var nifExists = await UtilizadoresService.GetUtilizadorByNIF(NIF);
+                if (nifExists != null)
+                {
+                    ErrorMessage = "NIF already exists!";
+                    return;
+                }
+            }
+            
             if (user != null)
             {
                 user.Email = Email;
