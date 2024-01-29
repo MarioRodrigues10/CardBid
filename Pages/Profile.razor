@@ -106,11 +106,19 @@
                     height: auto;
                     }
                 </style>
-                <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
-                <div class="flex flex-col bg-white p-4">
-                    <span class="text-xl font-bold">Seller: @usernames[leilao.VendedorId]</span>
+                @if (leilao.Estado == "Aceite")
+                {
+                    <img src="@fotos[leilao.Id].Foto" alt="Card Image" @onclick="() => ShowCard(leilao.Id)" class="w-full" />   <!-- you can access the leilao if you touch the image -->
+                }
+                else
+                {
+                    <img src="@fotos[leilao.Id].Foto" alt="Card Image" class="w-full" />
+                }
+                    <div class="flex flex-col bg-white p-4">
+                        <span class="text-xl font-bold">Seller: @usernames[leilao.VendedorId]</span>
                     <span class="text-xl font-bold">Card: @leilao.Titulo</span>
                     <span class="text-xl font-bold">Auction Time Limit: @leilao.DataLimite</span>
+                    <span class="text-xl font-bold">Status: @getEstado(leilao.Estado)</span>
                 </div>
 
                 @if (showFatura)
@@ -239,5 +247,20 @@
     {
         faturaSelected = id;
         StateHasChanged();
+    }
+
+    private string getEstado(string estado)
+    {
+        switch (estado)
+        {
+            case "Pendente":
+                return "Pending";
+            case "Aceite":
+                return "Ongoing";
+            case "Finalizado":
+                return "Finished";
+            default:
+                return "Unknown";
+        }
     }
 }
