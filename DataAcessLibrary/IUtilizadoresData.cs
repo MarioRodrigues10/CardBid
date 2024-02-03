@@ -12,5 +12,9 @@ namespace CardBid.DataAcessLibrary
         Task<Utilizadores> GetUtilizadorById(int id);
 
         Task UpdateUtilizador(Utilizadores user);
+
+        Task<Utilizadores> GetUtilizadorByEmail(string email);
+
+        Task<Utilizadores> GetUtilizadorByNIF(string nif);
     }
 }

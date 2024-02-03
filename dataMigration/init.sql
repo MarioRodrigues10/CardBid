@@ -175,7 +175,8 @@ BEGIN
         ('2024-01-30 22:24:00.000', 230.00, 11.50, 'Aceite', 10, 'Official first edition Lebron James rookie season card', 2, 'Basquetebol', null, 'Lebron James'),
         ('2024-01-30 18:30:00.000', 355.00, 17.75, 'Aceite', 9, 'Almost perfect first edition Charizard VMax', 2, 'Pokemon', null, 'Charizard VMax'),
         ('2024-01-30 19:30:00.000', 450.00, 22.50, 'Aceite', 10, 'First edition Dark Magician card from the original Deck', 3, 'Yu-Gi-Oh!', null, 'Dark Magician'),
-        ('2024-01-30 21:00:00.000', 2500.00, 125.00, 'Aceite', 9, 'There is only one copy of this card in the entire world. The first edition limited card from the collaboration between Magic: The Gathering and Lord of the Rings.', 3, 'Magic: The Gathering', null, 'Lord of the Rings - The One Ring');
+        ('2024-01-30 21:00:00.000', 2500.00, 125.00, 'Aceite', 9, 'There is only one copy of this card in the entire world. The first edition limited card from the collaboration between Magic: The Gathering and Lord of the Rings.', 3, 'Magic: The Gathering', null, 'Lord of the Rings - The One Ring'),
+        ('2024-01-31 19:45:00.000', 75.00, 3.75, 'Pendente', 10, 'Squirtle card from the base pokemon set', 1, 'Pokemon', null, 'Squirtle');
 END
 
 IF NOT EXISTS (SELECT 1 FROM Fotos)
@@ -187,5 +188,6 @@ BEGIN
         ('Images/d294a892-74ea-4f17-bf47-3963717309e9..jpg', 3),
         ('Images/080e285a-a193-4d0b-8580-cc449be45394..png', 4),
         ('Images/5d73bc3d-32c0-43aa-ac62-83cd4c8e66ac..jpg', 5),
-        ('Images/b345533a-1607-48de-895a-1c8c96e3f9cd..png', 6);
+        ('Images/b345533a-1607-48de-895a-1c8c96e3f9cd..png', 6),
+        ('Images/3b5c99ea-77ab-4aaa-a05e-213e1a257575..png', 7);
 END

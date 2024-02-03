@@ -211,7 +211,7 @@
                     var currentFoto = fotos[currentLeilao.Id].Foto;
                     var currentBid = currentBids[currentLeilao.Id].ToString();
 
-                    <div class="ml-2 bg-gray-300 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
+                    <div class="ml-2 w-96 border-black border-2 object-fit:contain @((card == 1) ? "border-t-2 mt-5" : "")">
                         <img src="@fotos[leiloes[card-1].Id].Foto" alt="Card Image" @onclick="() => ShowCard(currentLeilao)" class="w-full"/>
                         <div class="flex flex-col bg-white p-4">
                             <span class="text-xl font-bold" @onclick="() => NavigateToSellerProfile(currentLeilao.VendedorId)" >Seller: @usernames[currentLeilao.VendedorId]</span>
