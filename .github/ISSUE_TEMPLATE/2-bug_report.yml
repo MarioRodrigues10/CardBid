@@ -25,7 +25,6 @@ body:
         - Chrome
         - Safari
         - Microsoft Edge
-      required: true
   - type: textarea
     attributes:
       label: If applicable, add screenshots to help explain present your vision of the bug
